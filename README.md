@@ -1,2 +1,2 @@
-# SEHR
-Synthetic electronic health records
+# SEMR
+Synthetic electronic medical records
