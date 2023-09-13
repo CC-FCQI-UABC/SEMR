@@ -1,2 +1,2 @@
-# ECE
-Expedientes Clínicos Electrónicos Sintéticos
+# SEMR
+Syntetic Electronic Medical Records
