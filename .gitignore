@@ -1,24 +1,48 @@
-# Compiled class file
-*.class
+**/.DS_Store
+.classpath
+.project
+.settings
+.gradle
+/nbproject/**
+/build/**
+bin/**
 
-# Log file
-*.log
+/.gradle/
+/bin/
 
-# BlueJ files
-*.ctxt
+/failed_exports/
+/output/
+/out/
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+**/*.log
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# don't commit the autobuilt version file
+src/main/resources/version.txt
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# don't commit the code maps
+src/main/resources/export/condition_code_map.json
+src/main/resources/export/medication_code_map.json
+src/main/resources/export/drg_code_map.json
+src/main/resources/export/dme_code_map.json
+src/main/resources/export/hcpcs_code_map.json
+src/main/resources/export/betos_code_map.json
+src/main/resources/export/external_codes.csv
+src/main/resources/export/snf_pdpm_code_map.json
+src/main/resources/export/snf_pps_code_map.json
+src/main/resources/export/snf_rev_cntr_code_map.json
+src/main/resources/export/hha_rev_cntr_code_map.json
+src/main/resources/export/hospice_rev_cntr_code_map.json
+src/main/resources/export/inpatient_rev_cntr_code_map.json
+
+# H2 database files
+**/*.mv.db
+**/*.trace.db
+
+# VS Code launch settings
+.vscode/launch.test.json
+.vscode/launch.json
+.vscode/settings.json
+/build/
+
+# VS Code plugin files
+.history
