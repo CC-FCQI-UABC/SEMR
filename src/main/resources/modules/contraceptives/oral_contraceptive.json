@@ -78,8 +78,7 @@
           "display": "Consultation for treatment"
         }
       ],
-      "direct_transition": "Combination_Or_Minipill",
-      "reason": "contraception_care_reason"
+      "direct_transition": "Combination_Or_Minipill"
     },
     "Combination_Or_Minipill": {
       "type": "Simple",
@@ -395,7 +394,7 @@
         {
           "system": "RxNorm",
           "code": "235389",
-          "display": "Mestranol / Norethynodrel"
+          "display": "Mestranol / Norethynodrel [Enovid]"
         }
       ],
       "direct_transition": "End_Encounter"

@@ -16,8 +16,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.helpers.Config;
-import org.mitre.synthea.helpers.DefaultRandomNumberGenerator;
-import org.mitre.synthea.world.agents.Provider.ProviderType;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.geography.Location;
 
@@ -25,8 +23,6 @@ public class ProviderTest {
 
   private static Location location;
   private static Location city;
-  public static final DefaultRandomNumberGenerator providerRandom =
-      new DefaultRandomNumberGenerator(1L);
 
   /**
    * Setup test suite.
@@ -50,21 +46,21 @@ public class ProviderTest {
 
   @Test
   public void testLoadProvidersByAbbreviation() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
   }
 
   @Test
   public void testLoadProvidersByStateName() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
   }
 
   @Test
   public void testGenerateClinicianByAbbreviation() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
     Provider provider = Provider.getProviderList().get(0);
@@ -75,7 +71,7 @@ public class ProviderTest {
 
   @Test
   public void testGenerateClinicianByState() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Assert.assertNotNull(Provider.getProviderList());
     Assert.assertFalse(Provider.getProviderList().isEmpty());
     Provider provider = Provider.getProviderList().get(0);
@@ -85,16 +81,16 @@ public class ProviderTest {
   }
 
   @Test
-  public void testAllFacilitiesHaveAnIdOrNpi() {
-    Provider.loadProviders(location, providerRandom);
+  public void testAllFacilitiesHaveAnId() {
+    Provider.loadProviders(location, 1L);
     for (Provider p : Provider.getProviderList()) {
-      Assert.assertTrue(p.name + " has a null ID and null NPI.", (p.id != null || p.npi != null));
+      Assert.assertNotNull(p.name + " has a null ID.", p.id);
     }
   }
 
   @Test
   public void testNearestInpatientInState() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Person person = new Person(0L);
     location.assignPoint(person, location.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.INPATIENT, 0);
@@ -103,7 +99,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestAmbulatoryInState() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Person person = new Person(0L);
     location.assignPoint(person, location.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.AMBULATORY, 0);
@@ -112,7 +108,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestWellnessInState() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Person person = new Person(0L);
     location.assignPoint(person, location.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.WELLNESS, 0);
@@ -121,7 +117,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestEmergencyInState() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Person person = new Person(0L);
     location.assignPoint(person, location.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.EMERGENCY, 0);
@@ -135,7 +131,7 @@ public class ProviderTest {
     // coordinate. People in the same city have more or less the same
     // coordinate as emergency hospitals.
     Location capital = new Location("District of Columbia", null);
-    Provider.loadProviders(capital, providerRandom);
+    Provider.loadProviders(capital, 1L);
     Person person = new Person(0L);
     capital.assignPoint(person, capital.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.EMERGENCY, 0);
@@ -144,7 +140,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestUrgentCareInState() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Person person = new Person(0L);
     location.assignPoint(person, location.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.URGENTCARE, 0);
@@ -153,7 +149,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestInpatientInCity() {
-    Provider.loadProviders(city, providerRandom);
+    Provider.loadProviders(city, 1L);
     Person person = new Person(0L);
     city.assignPoint(person, city.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.INPATIENT, 0);
@@ -162,7 +158,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestAmbulatoryInCity() {
-    Provider.loadProviders(city, providerRandom);
+    Provider.loadProviders(city, 1L);
     Person person = new Person(0L);
     city.assignPoint(person, city.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.AMBULATORY, 0);
@@ -171,7 +167,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestWellnessInCity() {
-    Provider.loadProviders(city, providerRandom);
+    Provider.loadProviders(city, 1L);
     Person person = new Person(0L);
     city.assignPoint(person, city.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.WELLNESS, 0);
@@ -180,7 +176,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestEmergencyInCity() {
-    Provider.loadProviders(city, providerRandom);
+    Provider.loadProviders(city, 1L);
     Person person = new Person(0L);
     city.assignPoint(person, city.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.EMERGENCY, 0);
@@ -189,7 +185,7 @@ public class ProviderTest {
 
   @Test
   public void testNearestUrgentCareInCity() {
-    Provider.loadProviders(city, providerRandom);
+    Provider.loadProviders(city, 1L);
     Person person = new Person(0L);
     city.assignPoint(person, city.randomCityName(person));
     Provider provider = Provider.findService(person, EncounterType.URGENTCARE, 0);
@@ -199,10 +195,10 @@ public class ProviderTest {
   @Ignore("VA Facilities are not guaranteed to exist with international configurations.")
   @Test
   public void testVaFacilityOnlyAcceptsVeteran() {
-    Provider.loadProviders(location, providerRandom);
+    Provider.loadProviders(location, 1L);
     Provider vaProvider = Provider.getProviderList()
                                   .stream()
-                                  .filter(p -> ProviderType.VETERAN.equals(p.type))
+                                  .filter(p -> "VA Facility".equals(p.type))
                                   .findFirst().get();
     Person veteran = new Person(0L);
     veteran.attributes.put("veteran", "vietnam");
@@ -227,15 +223,10 @@ public class ProviderTest {
            try {
              Provider.clear();
              Provider.loadProviders(location, "providers/" + t.getFileName(),
-                 ProviderType.HOSPITAL, providerServices, providerRandom, false);
+                 providerServices, true, 1L);
            } catch (Exception e) {
              throw new RuntimeException("Failed to load provider file " + t, e);
            }
          });
-  }
-
-  @Test
-  public void testNPICreation() {
-    Assert.assertEquals("1234567893", Provider.toNPI(123_456_789L));
   }
 }

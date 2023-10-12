@@ -2,23 +2,17 @@ package org.mitre.synthea.export;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.UUID;
 
 import org.hl7.fhir.dstu3.model.Condition;
 import org.mitre.synthea.engine.Components.Attachment;
 import org.mitre.synthea.engine.Components.SampledData;
 import org.mitre.synthea.helpers.TimeSeriesData;
 import org.mitre.synthea.world.agents.Clinician;
-import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Observation;
@@ -150,8 +144,6 @@ public abstract class ExportHelper {
       type = "text";
     } else if (observation.value instanceof Double) {
       type = "numeric";
-    } else if (observation.value instanceof Boolean) {
-      type = "boolean";
     } else if (observation.value != null) {
       type = "text";
     }
@@ -197,21 +189,6 @@ public abstract class ExportHelper {
       // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6231579
       return ISO_DATE_FORMAT.format(new Date(time));
     }
-  }
-
-  /**
-   * Get the timestamp for next Friday.
-   */
-  public static long nextFriday(long time) {
-    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-    c.setTimeInMillis(time);
-    LocalDate d = LocalDate.of(
-        c.get(Calendar.YEAR), 1 + c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-    d = d.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
-    c.set(Calendar.YEAR, d.getYear());
-    c.set(Calendar.MONTH, d.getMonthValue() - 1);
-    c.set(Calendar.DAY_OF_MONTH, d.getDayOfMonth());
-    return c.getTimeInMillis();
   }
 
   private static final String SNOMED_URI = "http://snomed.info/sct";
@@ -286,49 +263,9 @@ public abstract class ExportHelper {
       return null;
     } else {
       return String.format("%s?identifier=%s|%s", "Practitioner",
-              "http://hl7.org/fhir/sid/us-npi", clinician.npi);
+              "http://hl7.org/fhir/sid/us-npi",
+              Long.toString(9_999_999_999L - clinician.identifier));
     }
-  }
-
-  /**
-   * Construct a consistent UUID based on the given Person, timestamp, and a key.
-   * This method allows you to get the same UUID for a concept at a given point in time,
-   * when that concept does not map cleanly 1:1 to an object in the Synthea model.
-   * IMPORTANT: this is NOT random but attempts to minimize the likelihood of collisions.
-   */
-  public static final String buildUUID(Person person, long timestamp, String key) {
-    return buildUUID(person.getSeed(), timestamp, key);
-  }
-
-  /**
-   * Construct a consistent UUID based on the given seed, timestamp, and a key.
-   * This method allows you to get the same UUID for a concept at a given point in time,
-   * when that concept does not map cleanly 1:1 to an object in the Synthea model.
-   * IMPORTANT: this is NOT random but attempts to minimize the likelihood of collisions.
-   */
-  public static final String buildUUID(long personSeed, long timestamp, String key) {
-    long mostSigBits = personSeed;
-    long leastSigBits = timestamp;
-
-    // the UUID is just the hex encoding of a 128bit number (represented in java as 2 64bit longs)
-    // so the person seed and timestamp are enough to get us "something", but we can mix it up
-    // to enable variety using the key. to make it numeric just get the hashCode
-    int keyHash = key.hashCode();
-
-    // first add the key to each long
-    mostSigBits = mostSigBits + keyHash;
-    leastSigBits = leastSigBits + keyHash;
-
-    // because the hashCode is an int, it didn't add anything in the upper bits of the long
-    // reverse the hashCode to get the upper bits
-    mostSigBits = mostSigBits + Long.reverse(keyHash);
-    leastSigBits = leastSigBits + Long.reverse(keyHash);
-
-    // finally rotate the bits just to get a little more variance in the characters
-    mostSigBits = Long.rotateLeft(mostSigBits, keyHash);
-    leastSigBits = Long.rotateLeft(leastSigBits, keyHash);
-
-    return new UUID(mostSigBits, leastSigBits).toString();
   }
 
   /**

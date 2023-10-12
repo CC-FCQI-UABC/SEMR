@@ -10,14 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.Range;
-import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.SimpleCSV;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.PayerManager;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.TelemedicineConfig;
-import org.mitre.synthea.world.concepts.healthinsurance.InsurancePlan;
 
 /**
  * Transition represents all the transition types within the generic module
@@ -73,14 +69,6 @@ public abstract class Transition implements Serializable {
     private Object distribution;
     private Double numericDistribution;
     private NamedDistribution namedDistribution;
-
-    public DistributedTransitionOption() {
-    }
-
-    public DistributedTransitionOption(String transition, double probability) {
-      this.transition = transition;
-      this.numericDistribution = probability;
-    }
   }
 
   /**
@@ -98,7 +86,7 @@ public abstract class Transition implements Serializable {
    * have an effective distribution of 0.25, and the last transition will have an
    * effective distribution of 0.0).
    */
-  public static class DistributedTransition extends Transition {
+  public static final class DistributedTransition extends Transition {
     private List<DistributedTransitionOption> transitions;
 
     public DistributedTransition(List<DistributedTransitionOption> transitions) {
@@ -109,90 +97,6 @@ public abstract class Transition implements Serializable {
     public String follow(Person person, long time) {
       return pickDistributedTransition(transitions, person);
     }
-  }
-
-  /**
-   * A transition that is based on the type of care that will follow. Transitions may be made to
-   * three states, "ambulatory", "emergency" and "emergency". The probability that a person will
-   * follow a particular transition path is based on the time in the simulation (telemedicine is
-   * more likely during and after the COVID-19 pandemic) and the type of insurance the person has.
-   */
-  public static class TypeOfCareTransition extends Transition {
-    private String ambulatory;
-    private String telemedicine;
-    private String emergency;
-    private TelemedicineConfig config;
-
-    /**
-     * Creates a new telemedicine config essentially from the JSON in GMF. This also reads in the
-     * telemedicine_config.json files which contains the different distributions to be used for
-     * transitions.
-     * @param options The states to transition to
-     */
-    public TypeOfCareTransition(TypeOfCareTransitionOptions options) {
-      this.ambulatory = options.ambulatory;
-      this.emergency = options.emergency;
-      this.telemedicine = options.telemedicine;
-      this.config = TelemedicineConfig.fromJSON();
-    }
-
-    @Override
-    public String follow(Person person, long time) {
-      String selectedTransition;
-      InsurancePlan current = person.coverage.getPlanAtTime(time);
-      String insuranceName;
-      if (current != null) {
-        insuranceName = current.getPayer().getName();
-      } else {
-        insuranceName = PayerManager.NO_INSURANCE;
-      }
-      if (time < config.getTelemedicineStartTime()) {
-        if (config.getHighEmergencyUseInsuranceNames().contains(insuranceName)) {
-          EnumeratedDistribution<String> preHigh = config.getPreTelemedHighEmergency();
-          synchronized (preHigh) {
-            preHigh.reseedRandomGenerator(person.randLong());
-            selectedTransition = preHigh.sample();
-          }
-        } else {
-          EnumeratedDistribution<String> preTypical = config.getPreTelemedTypicalEmergency();
-          synchronized (preTypical) {
-            preTypical.reseedRandomGenerator(person.randLong());
-            selectedTransition = preTypical.sample();
-          }
-        }
-      } else {
-        if (config.getHighEmergencyUseInsuranceNames().contains(insuranceName)) {
-          EnumeratedDistribution<String> high = config.getTelemedHighEmergency();
-          synchronized (high) {
-            high.reseedRandomGenerator(person.randLong());
-            selectedTransition = high.sample();
-          }
-        } else {
-          EnumeratedDistribution<String> typical = config.getTelemedTypicalEmergency();
-          synchronized (typical) {
-            typical.reseedRandomGenerator(person.randLong());
-            selectedTransition = typical.sample();
-          }
-        }
-      }
-      switch (selectedTransition) {
-        case TelemedicineConfig.AMBULATORY:
-          return this.ambulatory;
-        case TelemedicineConfig.EMERGENCY:
-          return this.emergency;
-        case TelemedicineConfig.TELEMEDICINE:
-          return this.telemedicine;
-        default:
-          throw new IllegalStateException("Selected transition is not ambulatory, emergency or"
-                  + "telemedicine.");
-      }
-    }
-  }
-
-  public static final class TypeOfCareTransitionOptions {
-    private String ambulatory;
-    private String telemedicine;
-    private String emergency;
   }
 
   /**
@@ -271,7 +175,10 @@ public abstract class Transition implements Serializable {
       String fileName = Config.get("generate.lookup_tables") + lookupTableName;
       List<? extends Map<String, String>> lookupTable = null;
       try {
-        String csv = Utilities.readResource(fileName, true, true);
+        String csv = Utilities.readResource(fileName);
+        if (csv.startsWith("\uFEFF")) {
+          csv = csv.substring(1); // Removes BOM.
+        }
         lookupTable = SimpleCSV.parse(csv);
       } catch (IOException e) {
         e.printStackTrace();
@@ -314,7 +221,17 @@ public abstract class Transition implements Serializable {
           Integer timeIndex = this.attributes.indexOf("time");
           // Remove and parse the age range.
           String value = rowAttributes.remove(timeIndex.intValue());
-          timeRange = Utilities.parseDateRange(value);
+          if (!value.contains("-")
+              || value.substring(0, value.indexOf("-")).length() < 1
+              || value.substring(value.indexOf("-") + 1).length() < 1) {
+            throw new RuntimeException(
+                "LOOKUP TABLE '" + fileName
+                    + "' ERROR: Time Range must be in the form: 'timeLow-timeHigh'. Found '"
+                    + value + "'");
+          }
+          timeRange = Range.between(
+              Long.parseLong(value.substring(0, value.indexOf("-"))),
+              Long.parseLong(value.substring(value.indexOf("-") + 1)));
         }
         // Attributes key to inert into lookup table.
         LookupTableKey attributesLookupKey =

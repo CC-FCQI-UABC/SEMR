@@ -1,6 +1,5 @@
 {
   "name": "chf_lab_work",
-  "specialty": "CARDIOVASCULAR DISEASE (CARDIOLOGY)",
   "remarks": [
     "This submodule captures all the initial lab work based on the STS data dictionary and standard of care.",
     "",
@@ -47,7 +46,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "CBC panel - Blood by Automated count"
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -302,7 +301,7 @@
             {
               "system": "LOINC",
               "code": "33914-3",
-              "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
             }
           ],
           "vital_sign": "EGFR"
@@ -452,7 +451,7 @@
         {
           "system": "LOINC",
           "code": "57698-3",
-          "display": "Lipid panel with direct LDL - Serum or Plasma"
+          "display": "Lipid Panel"
         }
       ],
       "observations": [
@@ -463,7 +462,7 @@
             {
               "system": "LOINC",
               "code": "2093-3",
-              "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+              "display": "Total Cholesterol"
             }
           ],
           "unit": "mg/dL"
@@ -499,7 +498,7 @@
             {
               "system": "LOINC",
               "code": "2085-9",
-              "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma"
+              "display": "High Density Lipoprotein Cholesterol"
             }
           ],
           "unit": "mg/dL"

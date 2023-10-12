@@ -314,7 +314,7 @@
       "codes": [
         {
           "system": "LOINC",
-          "code": "10480-2",
+          "code": 417181009,
           "display": "Estrogen+Progesterone receptor Ag [Presence] in Tissue by Immune stain"
         }
       ],

@@ -233,14 +233,36 @@
       "direct_transition": "Prescribe_Maintenance_Inhaler"
     },
     "Prescribe_Maintenance_Inhaler": {
-      "type": "CallSubmodule",
-      "submodule": "medications/maintenance_inhaler",
-      "direct_transition": "Prescribe_Emergency_Inhaler"
+      "type": "MedicationOrder",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "895994",
+          "display": "120 ACTUAT Fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "Prescribe_Emergency_Inhaler",
+      "chronic": true
     },
     "Prescribe_Emergency_Inhaler": {
-      "type": "CallSubmodule",
-      "submodule": "medications/emergency_inhaler",
-      "direct_transition": "Asthma_CarePlan_Selector"
+      "type": "MedicationOrder",
+      "reason": "asthma_condition",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "2123111",
+          "display": "NDA020503 200 ACTUAT Albuterol 0.09 MG/ACTUAT Metered Dose Inhaler"
+        }
+      ],
+      "prescription": {
+        "as_needed": true
+      },
+      "direct_transition": "Asthma_CarePlan_Selector",
+      "chronic": true
     },
     "Asthma_CarePlan_Selector": {
       "type": "Simple",
@@ -401,8 +423,7 @@
     "Next_Adult_Welness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Lifelong_Asthma_Begins",
-      "reason": "asthma_condition"
+      "direct_transition": "Lifelong_Asthma_Begins"
     },
     "Lifelong_Asthma_Begins": {
       "type": "ConditionOnset",
@@ -506,17 +527,16 @@
     "Next_Wellness_Encounter": {
       "type": "Encounter",
       "wellness": "true",
-      "direct_transition": "Maintenance_Medication_End",
-      "reason": "asthma_condition"
+      "direct_transition": "Maintenance_Medication_End"
     },
     "Maintenance_Medication_End": {
       "type": "MedicationEnd",
-      "referenced_by_attribute": "maintenance_inhaler",
+      "medication_order": "Prescribe_Maintenance_Inhaler",
       "direct_transition": "Emergency_Medication_End"
     },
     "Emergency_Medication_End": {
       "type": "MedicationEnd",
-      "referenced_by_attribute": "emergency_inhaler",
+      "medication_order": "Prescribe_Emergency_Inhaler",
       "direct_transition": "Childhood_Asthma_Subsides"
     },
     "Childhood_Asthma_Subsides": {

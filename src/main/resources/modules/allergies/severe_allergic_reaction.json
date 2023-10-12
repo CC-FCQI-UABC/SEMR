@@ -11,7 +11,7 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Acute_Allergic_Reaction"
+      "direct_transition": "ED_Visit_For_Allergic_Reaction"
     },
     "ED_Visit_For_Allergic_Reaction": {
       "type": "Encounter",
@@ -23,8 +23,7 @@
           "display": "Emergency room admission (procedure)"
         }
       ],
-      "direct_transition": "Administer_Epinephrine",
-      "reason": "Acute_Allergic_Reaction"
+      "direct_transition": "Acute_Allergic_Reaction"
     },
     "Acute_Allergic_Reaction": {
       "type": "ConditionOnset",
@@ -36,7 +35,7 @@
           "display": "Acute allergic reaction"
         }
       ],
-      "direct_transition": "ED_Visit_For_Allergic_Reaction"
+      "direct_transition": "Administer_Epinephrine"
     },
     "Administer_Epinephrine": {
       "type": "Procedure",
@@ -44,7 +43,7 @@
         {
           "system": "SNOMED-CT",
           "code": "313191000",
-          "display": "Injection of epinephrine (procedure)"
+          "display": "Injection of adrenaline"
         }
       ],
       "direct_transition": "Observation_Period"
@@ -72,7 +71,18 @@
           "display": "predniSONE 5 MG Oral Tablet"
         }
       ],
-      "administration": true,
+      "prescription": {
+        "dosage": {
+          "amount": 1,
+          "frequency": 1,
+          "period": 1,
+          "unit": "days"
+        },
+        "duration": {
+          "quantity": 1,
+          "unit": "days"
+        }
+      },
       "direct_transition": "End_Mild_Steroid"
     },
     "End_Mild_Steroid": {

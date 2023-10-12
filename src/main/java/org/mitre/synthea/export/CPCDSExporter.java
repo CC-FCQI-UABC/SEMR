@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.RandomNumberGenerator;
 import org.mitre.synthea.world.agents.Person;
-import org.mitre.synthea.world.concepts.Claim;
 import org.mitre.synthea.world.concepts.HealthRecord.CarePlan;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.mitre.synthea.world.concepts.HealthRecord.Device;
@@ -234,9 +233,8 @@ public class CPCDSExporter {
     long end = 0;
 
     for (Encounter encounter : person.record.encounters) {
-      String encounterID = encounter.uuid.toString();
-      String medRecordNumber = ExportHelper.buildUUID(person, encounter.start,
-          "MedRecordNumber for Encounter" + encounterID);
+      String encounterID = person.randUUID().toString();
+      UUID medRecordNumber = person.randUUID();
       CPCDSAttributes encounterAttributes = new CPCDSAttributes(encounter);
 
 
@@ -244,8 +242,8 @@ public class CPCDSExporter {
         payerId = "b1c428d6-4f07-31e0-90f0-68ffa6ff8c76";
         payerName = clean(Config.get("single_payer.name"));
       } else {
-        payerId = encounter.claim.getPayer().uuid.toString();
-        payerName = encounter.claim.getPayer().getName();
+        payerId = encounter.claim.payer.uuid.toString();
+        payerName = encounter.claim.payer.getName();
       }
 
       for (CarePlan careplan : encounter.careplans) {
@@ -259,8 +257,8 @@ public class CPCDSExporter {
       if (start == 999999999999999999L) {
         start = end;
       }
-      String coverageID = coverage(person, personID, encounterID, start, end, payerId, type,
-          groupId, groupName, planName, planId);
+      String coverageID = coverage(person, personID, start, end, payerId, type, groupId, groupName,
+              planName, planId);
       claim(person, encounter, personID, encounterID, medRecordNumber, encounterAttributes, payerId,
               coverageID);
       hospital(encounter, encounterAttributes, payerName);
@@ -301,12 +299,12 @@ public class CPCDSExporter {
     } else {
       s.append(',');
     }
-    s.append(person.attributes.getOrDefault(Person.COUNTY, "")).append(',');
+    s.append(person.attributes.getOrDefault("county", "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
     s.append(person.attributes.getOrDefault("country", "United States")).append(',');
     s.append(person.attributes.getOrDefault(Person.ZIP, "")).append(',');
 
-    s.append(person.attributes.getOrDefault(Person.COUNTY, "")).append(',');
+    s.append(person.attributes.getOrDefault("county", "")).append(',');
     s.append(person.attributes.getOrDefault(Person.STATE, "")).append(',');
     s.append(person.attributes.getOrDefault("country", "United States")).append(',');
     s.append(person.attributes.getOrDefault(Person.ZIP, ""));
@@ -329,18 +327,18 @@ public class CPCDSExporter {
   /**
    * Write a single Coverage CPCDS file.
    *
+   * @param rand        Source of randomness to use when generating ids etc
    * @param personID    ID of the person prescribed the careplan.
    * @param encounterID ID of the encounter where the careplan was prescribed
    * @param careplan    The careplan itself
    * @throws IOException if any IO error occurs
    */
-  private String coverage(Person person, String personID, String encounterID, long start, long stop,
+  private String coverage(RandomNumberGenerator rand, String personID, long start, long stop,
           String payerId, String type, UUID groupId, String groupName, String name,
           String planId) throws IOException {
 
     StringBuilder s = new StringBuilder();
-    String coverageID = ExportHelper.buildUUID(person, start,
-        "Coverage ID for Encounter" + encounterID);
+    String coverageID = rand.randUUID().toString();
     s.append(coverageID).append(',');
     s.append(personID).append(',');
     s.append(personID).append(',');
@@ -385,7 +383,7 @@ public class CPCDSExporter {
    * @throws IOException Throws this exception
    */
   private void claim(RandomNumberGenerator rand, Encounter encounter, String personID,
-          String encounterID, String medRecordNumber, CPCDSAttributes attributes, String payerId,
+          String encounterID, UUID medRecordNumber, CPCDSAttributes attributes, String payerId,
           String coverageID) throws IOException {
 
     StringBuilder s = new StringBuilder();
@@ -403,7 +401,7 @@ public class CPCDSExporter {
         String.valueOf(dateFromTimestamp(encounter.start)),
         String.valueOf(dateFromTimestamp(encounter.stop)),
         personID.toString(),
-        medRecordNumber,
+        medRecordNumber.toString(),
         encounterID,
         "",
         "",
@@ -460,29 +458,29 @@ public class CPCDSExporter {
       String providerString = provider.toString();
 
       // totals
-      BigDecimal totalCost =  attributes.getTotalClaimCost(); //encounter.claim.getTotalClaimCost();
-      BigDecimal coveredCost = encounter.claim.getTotalCoveredCost();
-      BigDecimal disallowed = totalCost.subtract(coveredCost);
-      BigDecimal patientPaid = Claim.ZERO_CENTS;
-      BigDecimal memberReimbursement = Claim.ZERO_CENTS;
-      BigDecimal paymentAmount = Claim.ZERO_CENTS;
-      BigDecimal toProvider = Claim.ZERO_CENTS;
-      BigDecimal deductible = encounter.claim.person.coverage.getTotalCoverage();
-      BigDecimal liability = Claim.ZERO_CENTS;
-      BigDecimal copay = Claim.ZERO_CENTS;
+      double totalCost =  attributes.getTotalClaimCost(); //encounter.claim.getTotalClaimCost();
+      double coveredCost = encounter.claim.getCoveredCost();
+      double disallowed = totalCost - coveredCost;
+      double patientPaid;
+      double memberReimbursement;
+      double paymentAmount;
+      double toProvider;
+      double deductible = encounter.claim.person.coverage.getTotalCoverage();
+      double liability;
+      double copay = 0.00;
 
-      if (disallowed.compareTo(Claim.ZERO_CENTS) > 0) {
-        memberReimbursement = Claim.ZERO_CENTS;
+      if (disallowed > 0) {
+        memberReimbursement = 0.00;
         patientPaid = disallowed;
       } else {
-        memberReimbursement = disallowed.negate();
-        disallowed = Claim.ZERO_CENTS;
-        patientPaid = Claim.ZERO_CENTS;
+        memberReimbursement = disallowed - 2 * disallowed;
+        disallowed = 0.00;
+        patientPaid = 0.00;
       }
 
-      paymentAmount = coveredCost.add(patientPaid);
+      paymentAmount = coveredCost + patientPaid;
       toProvider = paymentAmount;
-      liability = totalCost.subtract(paymentAmount);
+      liability = totalCost - paymentAmount;
 
       String[] claimTotalsSection = {
         String.valueOf(paymentAmount),
@@ -749,7 +747,7 @@ public class CPCDSExporter {
                   * dayMultiplier.get(duration.get("unit").getAsString());
         }
 
-        UUID rxRef = medication.uuid;
+        UUID rxRef = rand.randUUID();
 
         String[] serviceTypeList = { "01", "04", "06" };
         String serviceType = serviceTypeList[(int) randomLongWithBounds(0, 2)];
@@ -956,7 +954,7 @@ public class CPCDSExporter {
       s.append(clean(encounter.provider.state)).append(',');
       s.append(clean(encounter.provider.zip)).append(',');
       s.append(clean(encounter.provider.phone)).append(',');
-      s.append(clean(encounter.provider.cmsProviderType)).append(NEWLINE);
+      s.append(clean(encounter.provider.type)).append(NEWLINE);
 
       exportedHospitals.add(attributes.getServiceSiteNPI());
 
@@ -1032,7 +1030,7 @@ public class CPCDSExporter {
     private String revenueCenterCode;
     private String npiProvider;
     private String npiPrescribingProvider;
-    private BigDecimal totalClaimCost = Claim.ZERO_CENTS;
+    private double totalClaimCost = 0.00;
 
     /**
      * Constructor. Takes the encounter and processes relevant encounters based on
@@ -1044,9 +1042,9 @@ public class CPCDSExporter {
       isInpatient(encounter.type);
 
       String doctorNPI = (encounter.clinician != null
-              ? String.valueOf(encounter.clinician.npi) : "");
+              ? String.valueOf(encounter.clinician.identifier) : "");
       String hospitalNPI = (encounter.provider != null
-              ? String.valueOf(encounter.provider.npi) : "");
+              ? String.valueOf(encounter.provider.id) : "");
       String newHospitalID = String.valueOf(randomLongWithBounds(100000, 999999))
               + String.valueOf(randomLongWithBounds(100000, 999999));
       String newPractitionerID = String.valueOf(randomLongWithBounds(100000, 999999))
@@ -1112,20 +1110,20 @@ public class CPCDSExporter {
       setNpiProvider(doctorNPI);
 
       for (Entry condition : encounter.conditions) {
-        totalClaimCost = totalClaimCost.add(condition.getCost());
+        totalClaimCost = totalClaimCost + condition.getCost().doubleValue();
       }
       for (Procedure procedure : encounter.procedures) {
-        totalClaimCost = totalClaimCost.add(procedure.getCost());
+        totalClaimCost = totalClaimCost + procedure.getCost().doubleValue();
       }
       for (Medication medication : encounter.medications) {
-        totalClaimCost = totalClaimCost.add(medication.getCost());
+        totalClaimCost = totalClaimCost + medication.getCost().doubleValue();
       }
       for (Device device : encounter.devices) {
-        totalClaimCost = totalClaimCost.add(device.getCost());
+        totalClaimCost = totalClaimCost + device.getCost().doubleValue();
       }
     }
 
-    public BigDecimal getTotalClaimCost() {
+    public double getTotalClaimCost() {
       return totalClaimCost;
     }
 

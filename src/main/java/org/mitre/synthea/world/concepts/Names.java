@@ -43,14 +43,8 @@ public class Names {
     } else {
       choices = (List<String>) names.get("english." + gender);
     }
-
     // pick a random item from the list
-
-    // Modificaciones de galindo synsynthea
-    int primerNombre = person.randInt(choices.size());
-    int segundoNombre = person.randInt(choices.size()); // debe ser diferente al primero
-
-    String name = choices.get(primerNombre) + " " + choices.get(segundoNombre);
+    String name = choices.get(person.randInt(choices.size()));
 
     if (appendNumbersToNames) {
       name = addHash(name);
@@ -75,10 +69,8 @@ public class Names {
     } else {
       choices = (List<String>) names.get("english.family");
     }
-
-    // Modificaciones de galindo synsynthea
     // pick a random item from the list
-    String name = choices.get(person.randInt(choices.size())) + " " + choices.get(person.randInt(choices.size()));
+    String name = choices.get(person.randInt(choices.size()));
 
     if (appendNumbersToNames) {
       name = addHash(name);

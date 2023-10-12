@@ -42,7 +42,7 @@
         "",
         "Some women might be worried that having a less extensive surgery might raise their risk of the cancer coming back. But the fact is, in most cases, mastectomy does not give you any better chance of long-term survival or a better outcome from treatment. Studies following thousands of women for more than 20 years show that when BCS can be done along with radiation, having a mastectomy instead does not provide any better chance of survival."
       ],
-      "direct_transition": "Post_Surgical_Recovery",
+      "direct_transition": "End Surgery encounter",
       "reason": "breast_cancer_condition"
     },
     "Breast-conserving surgery (BCS)": {
@@ -78,7 +78,7 @@
         "",
         "Some women might be worried that having a less extensive surgery might raise their risk of the cancer coming back. But the fact is, in most cases, mastectomy does not give you any better chance of long-term survival or a better outcome from treatment. Studies following thousands of women for more than 20 years show that when BCS can be done along with radiation, having a mastectomy instead does not provide any better chance of survival."
       ],
-      "direct_transition": "Post Surgical Recovery",
+      "direct_transition": "BCS end surgery",
       "reason": "breast_cancer_condition"
     },
     "External Beam Radiation": {
@@ -87,7 +87,7 @@
         {
           "system": "SNOMED-CT",
           "code": 33195004,
-          "display": "External beam radiation therapy procedure (procedure)"
+          "display": "Teleradiotherapy procedure (procedure)"
         }
       ],
       "duration": {
@@ -292,8 +292,7 @@
       ],
       "direct_transition": "Advanced Drugs IV Injection",
       "assign_to_attribute": "adv_drug",
-      "reason": "breast_cancer_condition",
-      "administration": true
+      "reason": "breast_cancer_condition"
     },
     "Denosumab": {
       "type": "MedicationOrder",
@@ -306,8 +305,7 @@
       ],
       "direct_transition": "Advanced Drugs IV Injection",
       "assign_to_attribute": "adv_drug",
-      "reason": "breast_cancer_condition",
-      "administration": true
+      "reason": "breast_cancer_condition"
     },
     "Pamidronate": {
       "type": "MedicationOrder",
@@ -320,8 +318,7 @@
       ],
       "direct_transition": "Pamidronate IV Injection",
       "assign_to_attribute": "adv_drug",
-      "reason": "breast_cancer_condition",
-      "administration": true
+      "reason": "breast_cancer_condition"
     },
     "Breast_Surgery": {
       "type": "Simple",
@@ -369,15 +366,7 @@
       "direct_transition": "Delay After Treatment"
     },
     "Lymph_Node Surgery": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "GAUSSIAN",
-        "parameters": {
-          "mean": 60,
-          "standardDeviation": 90
-        }
-      },
-      "unit": "minutes",
+      "type": "Simple",
       "distributed_transition": [
         {
           "transition": "Sentinel_Lymph_Node_Biopsy__SLNB_",
@@ -406,15 +395,7 @@
       ]
     },
     "End_Lymph_Node_Surgery": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "GAUSSIAN",
-        "parameters": {
-          "mean": 90,
-          "standardDeviation": 30
-        }
-      },
-      "unit": "minutes",
+      "type": "Simple",
       "conditional_transition": [
         {
           "transition": "External Beam Radiation",
@@ -433,7 +414,7 @@
     "Surgery encounter": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "breast_cancer_condition",
+      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -496,7 +477,7 @@
     },
     "Mastectomy Follow-Up Therapy": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -668,13 +649,12 @@
         "Weakness and fracture of the ribs in rare cases",
         "Fluid collecting in the breast (seroma) ",
         " "
-      ],
-      "reason": "breast_cancer_condition"
+      ]
     },
     "BCS Follow-Up Treatment": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "breast_cancer_condition",
+      "encounter_class": "inpatient",
+      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -970,7 +950,7 @@
     "Start New Advanced Drug Cycle": {
       "type": "Encounter",
       "encounter_class": "inpatient",
-      "reason": "breast_cancer_condition",
+      "reason": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1036,7 +1016,7 @@
     },
     "Next Day Radiation Treatment": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1066,8 +1046,7 @@
             "name": "Hypofractionated radiation therapy"
           }
         }
-      ],
-      "reason": "breast_cancer_condition"
+      ]
     },
     "Excision_Of_Sentinel_Lymph_Node": {
       "type": "Procedure",
@@ -1103,28 +1082,6 @@
         "https://www.cooperhealth.org/services/radiation-oncology/questions-you-may-have-about-radiation-therapy"
       ],
       "value": 0
-    },
-    "Post Surgical Recovery": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "EXPONENTIAL",
-        "parameters": {
-          "mean": 2
-        }
-      },
-      "unit": "days",
-      "direct_transition": "BCS end surgery"
-    },
-    "Post_Surgical_Recovery": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "EXPONENTIAL",
-        "parameters": {
-          "mean": 2
-        }
-      },
-      "unit": "days",
-      "direct_transition": "End Surgery encounter"
     }
   },
   "gmf_version": 1

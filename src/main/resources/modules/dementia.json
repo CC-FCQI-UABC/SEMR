@@ -84,7 +84,7 @@
           "display": "Alzheimer's disease (disorder)"
         }
       ],
-      "direct_transition": "Eventual_Hospice_Reason"
+      "direct_transition": "NoImpairment"
     },
     "PreEarlyOnsetAlzheimers": {
       "type": "Delay",
@@ -106,7 +106,7 @@
           "display": "Familial Alzheimer's disease of early onset (disorder)"
         }
       ],
-      "direct_transition": "Eventual_Hospice_Reason"
+      "direct_transition": "NoImpairment"
     },
     "NoImpairment": {
       "type": "Delay",
@@ -232,8 +232,7 @@
         "This is the enounter where alzheimer's is diagnosed. ",
         "Typical life expectancy after an Alzheimer’s diagnosis is 4-to-8 years. (Alzheimer’s Association)"
       ],
-      "direct_transition": "Diagnosis_MMSE_Score",
-      "reason": "Type of Alzheimer's"
+      "direct_transition": "Diagnosis_MMSE_Score"
     },
     "Diagnosis_MMSE_Score": {
       "type": "Observation",
@@ -266,14 +265,14 @@
         {
           "system": "SNOMED-CT",
           "code": "386257007",
-          "display": "Dementia management"
+          "display": "Demential management"
         }
       ],
       "activities": [
         {
           "system": "SNOMED-CT",
-          "code": "311401005",
-          "display": "Patient education (procedure)"
+          "code": "850261000000100",
+          "display": "Education about dementia"
         },
         {
           "system": "SNOMED-CT",
@@ -424,7 +423,6 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "Type of Alzheimer's",
-      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -685,6 +683,7 @@
     },
     "Pneumonia": {
       "type": "ConditionOnset",
+      "target_encounter": "PneumoniaEncounter",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -695,22 +694,20 @@
       "remarks": [
         "Pneumonia is one of the most common causes of death among Alzheimer’s patients"
       ],
-      "direct_transition": "PneumoniaEncounter",
-      "assign_to_attribute": "hospice_reason",
-      "target_encounter": "PneumoniaEncounter"
+      "direct_transition": "PneumoniaEncounter"
     },
     "PneumoniaEncounter": {
       "type": "Encounter",
-      "encounter_class": "emergency",
+      "encounter_class": "inpatient",
       "reason": "Pneumonia",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 4525004,
-          "display": "Emergency department patient visit (procedure)"
+          "code": "32485007",
+          "display": "Hospital admission"
         }
       ],
-      "direct_transition": "Emergency Time"
+      "direct_transition": "PneumoniaDeath"
     },
     "PneumoniaDeath": {
       "type": "Death",
@@ -720,7 +717,7 @@
         "unit": "days"
       },
       "condition_onset": "Pneumonia",
-      "direct_transition": "Admit to Hospice"
+      "direct_transition": "Terminal"
     },
     "Death": {
       "type": "Death",
@@ -733,38 +730,6 @@
     "End_Diagnosis_Encounter": {
       "type": "EncounterEnd",
       "direct_transition": "ModerateDecline"
-    },
-    "Eventual_Hospice_Reason": {
-      "type": "SetAttribute",
-      "attribute": "hospice_reason",
-      "direct_transition": "NoImpairment",
-      "value_attribute": "Type of Alzheimer's"
-    },
-    "Admit to Hospice": {
-      "type": "SetAttribute",
-      "attribute": "hospice",
-      "direct_transition": "Terminal",
-      "value": true
-    },
-    "Emergency Time": {
-      "type": "Delay",
-      "distribution": {
-        "kind": "EXPONENTIAL",
-        "parameters": {
-          "mean": 3
-        }
-      },
-      "unit": "hours",
-      "direct_transition": "End Emergency Visit"
-    },
-    "End Emergency Visit": {
-      "type": "EncounterEnd",
-      "direct_transition": "PneumoniaDeath",
-      "discharge_disposition": {
-        "system": "NUBC",
-        "code": 50,
-        "display": "Discharged/transferred to Hospice - home"
-      }
     }
   },
   "gmf_version": 1

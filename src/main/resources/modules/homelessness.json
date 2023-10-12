@@ -54,11 +54,11 @@
           },
           "distributions": [
             {
-              "distribution": 0.990025,
+              "distribution": 0.009975,
               "transition": "Potential_Homelessness"
             },
             {
-              "distribution": 0.009975,
+              "distribution": 0.990025,
               "transition": "Begin_Homelessness"
             }
           ]
@@ -81,7 +81,7 @@
       "type": "SetAttribute",
       "attribute": "homeless",
       "value": true,
-      "direct_transition": "Homeless_Condition"
+      "direct_transition": "Homelessness_Counter"
     },
     "Homelessness_Counter": {
       "type": "Counter",
@@ -198,8 +198,7 @@
           "display": "Domiciliary or rest home patient evaluation and management"
         }
       ],
-      "direct_transition": "Information_Gathering",
-      "reason": "Homeless_Condition"
+      "direct_transition": "Information_Gathering"
     },
     "Information_Gathering": {
       "type": "Procedure",
@@ -218,7 +217,7 @@
     },
     "Question_1": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -265,7 +264,7 @@
     },
     "Question_2_Positive": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -281,7 +280,7 @@
     },
     "Question_2_Negative": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -318,7 +317,7 @@
         "in the real world homelessness has a stronger asssociation with drug abuse",
         "see http://www.nationalhomeless.org/factsheets/addiction.pdf "
       ],
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -334,7 +333,7 @@
     },
     "Question_3_Nonabuser": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -350,7 +349,7 @@
     },
     "Question_4": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -382,7 +381,7 @@
     },
     "Question_5_Yes": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -398,7 +397,7 @@
     },
     "Question_5_No": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
@@ -414,12 +413,12 @@
     },
     "Question_6": {
       "type": "Observation",
-      "category": "survey",
+      "category": "social-history",
       "codes": [
         {
           "system": "LOINC",
           "code": "46240-8",
-          "display": "History of Hospitalizations+Outpatient visits Narrative"
+          "display": "History of Hospitalizations+Outpatient visits"
         }
       ],
       "range": {
@@ -437,24 +436,7 @@
       "type": "SetAttribute",
       "attribute": "homeless",
       "value": false,
-      "direct_transition": "End_Homeless_Condition"
-    },
-    "Homeless_Condition": {
-      "type": "ConditionOnset",
-      "target_encounter": "",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 32911000,
-          "display": "Homeless (finding)"
-        }
-      ],
-      "direct_transition": "Homelessness_Counter"
-    },
-    "End_Homeless_Condition": {
-      "type": "ConditionEnd",
-      "direct_transition": "Potential_Homelessness",
-      "condition_onset": "Homeless_Condition"
+      "direct_transition": "Potential_Homelessness"
     }
   },
   "gmf_version": 1

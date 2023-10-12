@@ -11,10 +11,9 @@
     <#list ehr_allergies as entry>
     <entry typeCode="DRIV">
       <act classCode="ACT" moodCode="EVN">
-        <templateId root="2.16.840.1.113883.10.20.22.4.30"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.30" extension="2015-08-01"/>
         <!--Allergy act template -->
-        <id root="${entry.uuid}"/>
+        <id root="${UUID?api.toString()}"/>
         <code nullFlavor="NA"/>
         <statusCode code="active"/>
         <effectiveTime>
@@ -22,7 +21,6 @@
         </effectiveTime>
         <entryRelationship typeCode="SUBJ" inversionInd="false">
           <observation classCode="OBS" moodCode="EVN">
-            <templateId root="2.16.840.1.113883.10.20.22.4.7"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.7" extension="2014-06-09"/>
             <id root="${UUID?api.toString()}"/>
             <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" />
@@ -76,7 +74,6 @@
             <entryRelationship typeCode="MFST" inversionInd="true">
               <observation classCode="OBS" moodCode="EVN">
                 <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
-                <templateId root="2.16.840.1.113883.10.20.22.4.9" />
                 <id root="${UUID?api.toString()}" />
                 <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" />
                 <statusCode code="completed" />
@@ -90,7 +87,6 @@
             <entryRelationship typeCode="SUBJ" inversionInd="true">
               <observation classCode="OBS" moodCode="EVN">
                 <templateId root="2.16.840.1.113883.10.20.22.4.8" extension="2014-06-09" />
-                <templateId root="2.16.840.1.113883.10.20.22.4.8" />
                 <code code="SEV" displayName="Severity Observation"
                       codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" />
                 <statusCode code="completed" />

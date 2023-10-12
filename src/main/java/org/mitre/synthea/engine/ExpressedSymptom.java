@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.mitre.synthea.export.JSONSkip;
-
 public class ExpressedSymptom implements Cloneable, Serializable {
 
   private static final long serialVersionUID = 4322116644425686800L;
@@ -51,7 +49,6 @@ public class ExpressedSymptom implements Cloneable, Serializable {
   public class SymptomSource implements Cloneable, Serializable {
     private static final long serialVersionUID = 4322116644425686802L;
 
-    @JSONSkip
     ExpressedSymptom symptom = ExpressedSymptom.this;
     // From which module the expressed symptom was set
     private String source;
@@ -117,7 +114,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
      * Get the current value of the symptom.
      */
     public Integer getCurrentValue() {
-      if (lastUpdateTime != null && timeInfos.containsKey(lastUpdateTime)) {
+      if (timeInfos.containsKey(lastUpdateTime)) {
         return timeInfos.get(lastUpdateTime).getValue();
       }
       return null;
@@ -202,7 +199,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    * Method for retrieving the value associated to a given source.
    */
   public Integer getValueFromSource(String source) {
-    if (source == null || !sources.containsKey(source)) {
+    if (!sources.containsKey(source)) {
       return null;
     }
     return sources.get(source).getCurrentValue();
@@ -212,7 +209,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    * Method for addressing a given source.
    */
   public void addressSource(String source) {
-    if (source != null && sources.containsKey(source)) {
+    if (sources.containsKey(source)) {
       sources.get(source).resolve();
     }
   }
@@ -222,7 +219,7 @@ public class ExpressedSymptom implements Cloneable, Serializable {
    */
   public Long getSymptomLastUpdatedTime(String module) {
     Long result = null;
-    if (module != null && sources.containsKey(module)) {
+    if (sources.containsKey(module)) {
       result = sources.get(module).getLastUpdateTime();
     }
     return result;

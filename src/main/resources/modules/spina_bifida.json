@@ -33,6 +33,7 @@
     },
     "Myelomeningocele": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_NICU",
       "codes": [
         {
@@ -45,6 +46,7 @@
     },
     "Meningocele": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -57,6 +59,7 @@
     },
     "Spina_Bifida_Occulta": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_Occulta",
       "codes": [
         {
@@ -187,6 +190,7 @@
     },
     "Hydrocephalus": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_NICU",
       "codes": [
         {
@@ -233,6 +237,7 @@
     },
     "Scoliosis": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_NICU",
       "codes": [
         {
@@ -251,6 +256,7 @@
     },
     "Foot_Deformity": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_NICU",
       "codes": [
         {
@@ -321,6 +327,7 @@
     },
     "Had_Fetal_Surgery": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_NICU",
       "codes": [
         {
@@ -359,6 +366,7 @@
     },
     "Chiari_II_Malformation": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_NICU",
       "codes": [
         {
@@ -418,6 +426,7 @@
     },
     "Kyphosis": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Encounter_NICU",
       "codes": [
         {
@@ -708,6 +717,7 @@
     },
     "Latex_Allergy": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "SB_Visit_1st",
       "codes": [
         {
@@ -886,6 +896,7 @@
     },
     "Condition_UTI_3": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "SB_Visit_Under_Age_5",
       "codes": [
         {
@@ -907,6 +918,7 @@
     },
     "Condition_Pressure_Ulcer_3": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "SB_Visit_Under_Age_5",
       "codes": [
         {
@@ -919,6 +931,7 @@
     },
     "Condition_Pressure_Ulcer_4": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "SB_Visit_Under_Age_5",
       "codes": [
         {
@@ -931,6 +944,7 @@
     },
     "Condition_UTI_2": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "SB_Visit_After_Age_5",
       "codes": [
         {
@@ -952,6 +966,7 @@
     },
     "Condition_Pressure_Ulcer": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "SB_Visit_After_Age_5",
       "codes": [
         {
@@ -964,6 +979,7 @@
     },
     "Condition_Pressure_Ulcer_2": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "SB_Visit_After_Age_5",
       "codes": [
         {

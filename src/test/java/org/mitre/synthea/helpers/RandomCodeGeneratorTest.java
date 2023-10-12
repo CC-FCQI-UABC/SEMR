@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import okhttp3.HttpUrl;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
@@ -19,29 +16,44 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RandomCodeGeneratorTest {
 
   private static final int SEED = 1234;
-  private static final String VALUE_SET_URI = SNOMED_URI + "?fhir_vs=ecl%2F%3C%3C131148009";
+  private static final String VALUE_SET_URI = SNOMED_URI + "?fhir_vs=ecl/<<131148009";
   private static final String PATH = "wiremock/RandomCodeGeneratorTest/__files/";
   private final Code code = new Code("SNOMED-CT", "38341003", "Hypertension");
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private MockWebServer server;
+  @Mock
+  private RestTemplate restTemplate;
 
   @Before
   public void setup() {
-    server = new MockWebServer();
+    RandomCodeGenerator.restTemplate = restTemplate;
   }
 
   @Test
-  public void getCode() throws IOException {
-    prepareServer("codes.json", false);
+  public void getCode() {
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(new ResponseEntity<String>(getResponseToStub("codes.json"), HttpStatus.OK));
 
     Code code = RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
 
@@ -51,76 +63,107 @@ public class RandomCodeGeneratorTest {
   }
 
   @Test
-  public void throwsWhenNoExpansion() throws IOException {
-    prepareServer("noExpansion.ValueSet.json", false);
+  public void throwsWhenNoExpansion() {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("ValueSet does not contain expansion");
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(new ResponseEntity<String>(getResponseToStub("noExpansion.ValueSet.json"),
+            HttpStatus.OK));
 
-    try {
-      RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
-    } catch (RuntimeException e) {
-      Assert.assertEquals("ValueSet does not contain expansion", e.getMessage());
-      return;
-    }
-    Assert.fail("Should have thrown a no expansion exception");
+    RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
   }
 
   @Test
-  public void throwsWhenNoTotal() throws IOException {
-    prepareServer("noTotal.ValueSet.json", false);
+  public void throwsWhenNoTotal() {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("No total element in ValueSet expand result");
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(new ResponseEntity<String>(getResponseToStub("noTotal.ValueSet.json"),
+            HttpStatus.OK));
 
-    try {
-      RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
-    } catch (RuntimeException e) {
-      Assert.assertEquals("No total element in ValueSet expand result", e.getMessage());
-      return;
-    }
-    Assert.fail("Should have thrown a no total element exception");
+    RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
   }
 
   @Test
-  public void throwsWhenNoContains() throws IOException {
-    prepareServer("noContains.ValueSet.json", false);
+  public void throwsWhenNoContains() {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("ValueSet expansion does not contain any codes");
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(new ResponseEntity<String>(getResponseToStub("noContains.ValueSet.json"),
+            HttpStatus.OK));
 
-    try {
-      RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
-    } catch (RuntimeException e) {
-      Assert.assertEquals("ValueSet expansion does not contain any codes", e.getMessage());
-      return;
-    }
-    Assert.fail("Should have thrown a no codes exception");
+    RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
   }
 
   @Test
-  public void throwsWhenMissingCodeElements() throws IOException {
-    prepareServer("missingCodeElements.ValueSet.json", false);
+  public void throwsWhenMissingCodeElements() {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("ValueSet contains element does not contain system, code and display");
 
-    try {
-      RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
-    } catch (RuntimeException e) {
-      Assert.assertEquals("ValueSet contains element does not contain system, code and display",
-              e.getMessage());
-      return;
-    }
-    Assert.fail("Should have thrown a missing elements exception");
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(new ResponseEntity<String>(
+            getResponseToStub("missingCodeElements.ValueSet.json"), HttpStatus.OK));
+
+    RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
   }
 
   @Test
-  public void throwsWhenInvalidResponse() throws IOException {
-    prepareServer("noExpansion.ValueSet.json", true);
+  public void throwsWhenInvalidResponse() {
+    thrown.expect(RuntimeException.class);
+    thrown.expectMessage("JsonProcessingException while parsing valueSet response");
 
-    try {
-      RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
-    } catch (RuntimeException e) {
-      Assert.assertEquals("JsonProcessingException while parsing valueSet response",
-              e.getMessage());
-      return;
-    }
-    Assert.fail("Should have thrown a JsonProcessingException exception");
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(new ResponseEntity<String>(
+            StringUtils.chop(getResponseToStub("noExpansion.ValueSet.json")),
+            HttpStatus.OK));
+
+    RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
   }
 
+  @Test
+  public void throwsWhenRestClientFailed() {
+    thrown.expect(RestClientException.class);
+    thrown.expectMessage("RestClientException while fetching valueSet response");
+
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenThrow(new RestClientException(
+            "RestClientException while fetching valueSet response"));
+
+    RandomCodeGenerator.getCode(VALUE_SET_URI, SEED, this.code);
+  }
 
   @Test
-  public void filterCodesTest() throws IOException {
-    prepareServer("codes.json", false);
+  public void filterCodesTest() {
+    Mockito
+        .when(restTemplate.exchange(ArgumentMatchers.anyString(),
+            ArgumentMatchers.eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<?>>any(),
+            ArgumentMatchers.<Class<String>>any()))
+        .thenReturn(new ResponseEntity<String>(getResponseToStub("codes.json"), HttpStatus.OK));
 
     Code code = RandomCodeGenerator.getCode(VALUE_SET_URI + "&filter=tracheobronchial",
         SEED, this.code);
@@ -138,9 +181,9 @@ public class RandomCodeGeneratorTest {
   }
 
   @After
-  public void cleanup() throws IOException {
+  public void cleanup() {
     RandomCodeGenerator.codeListCache.clear();
-    server.close();
+    RandomCodeGenerator.restTemplate = null;
   }
 
   private String getResponseToStub(String body) {
@@ -151,19 +194,6 @@ public class RandomCodeGeneratorTest {
       e.printStackTrace();
     }
     return null;
-  }
-
-  private void prepareServer(String fileToLoad, boolean mangle) throws IOException {
-    String response = getResponseToStub(fileToLoad);
-    if (mangle) {
-      response = StringUtils.chop(response);
-    }
-    server.enqueue(new MockResponse().setBody(response));
-    server.start();
-
-    HttpUrl baseUrl = server.url("/ValueSet/$expand");
-
-    RandomCodeGenerator.expandBaseUrl = baseUrl + "?url=";
   }
 
 }

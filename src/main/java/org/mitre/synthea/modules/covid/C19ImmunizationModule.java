@@ -219,13 +219,8 @@ public class C19ImmunizationModule extends Module {
   public static void vaccinate(Person person, long time, int series) {
     HealthRecord.Code encounterCode = new HealthRecord.Code("http://snomed.info/sct", "33879002",
         "Administration of vaccine to produce active immunity (procedure)");
-    String moduleName = "COVID-19 Immunization Module";
-    if (person.hasCurrentEncounter()) {
-      // Do nothing, vaccinate at the current encounter...
-    } else {
-      EncounterModule.createEncounter(person, time, HealthRecord.EncounterType.OUTPATIENT,
-          ClinicianSpecialty.GENERAL_PRACTICE, encounterCode, moduleName);
-    }
+    EncounterModule.createEncounter(person, time, HealthRecord.EncounterType.OUTPATIENT,
+        ClinicianSpecialty.GENERAL_PRACTICE, encounterCode);
     HealthRecord.Immunization immunization = person.record.immunization(time, "COVID19");
     immunization.series = series;
     C19Vaccine vaccine = C19Vaccine.EUAs.get(person.attributes.get(C19_VACCINE));
@@ -247,10 +242,6 @@ public class C19ImmunizationModule extends Module {
     covidImmunizationHistory.add(time);
     person.record.encounterEnd(time + Utilities.convertTime("minutes", 15),
         HealthRecord.EncounterType.OUTPATIENT);
-    if (person.hasCurrentEncounter()
-        && person.getCurrentEncounterModule().equals(moduleName)) {
-      person.releaseCurrentEncounter(time, moduleName);
-    }
   }
 
   @Override

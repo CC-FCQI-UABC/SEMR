@@ -151,8 +151,7 @@ public class PediatricGrowthTrajectory implements Serializable {
     double nextAgeYear = age + 1;
     String sex = (String) person.attributes.get(Person.GENDER);
     int nextRoundedYear = (int) Math.floor(nextAgeYear);
-    YearInformation yi
-        = PediatricGrowthTrajectory.yearCorrelations.get(Integer.toString(nextRoundedYear));
+    YearInformation yi = yearCorrelations.get(Integer.toString(nextRoundedYear));
     double sigma = sigma(sex, age);
     Point lastPoint = this.tail();
     double currentBMI = lastPoint.bmi;
