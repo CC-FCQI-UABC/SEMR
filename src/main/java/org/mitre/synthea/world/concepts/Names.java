@@ -38,13 +38,17 @@ public class Names {
   @SuppressWarnings("unchecked")
   public static String fakeFirstName(String gender, String language, Person person) {
     List<String> choices;
-    if ("spanish".equalsIgnoreCase(language)) {
-      choices = (List<String>) names.get("spanish." + gender);
-    } else {
-      choices = (List<String>) names.get("english." + gender);
-    }
+    //if ("spanish".equalsIgnoreCase(language)) {
+    //  choices = (List<String>) names.get("spanish." + gender);
+    //} else {
+    choices = (List<String>) names.get("english." + gender);
+    //}
     // pick a random item from the list
-    String name = choices.get(person.randInt(choices.size()));
+
+    String a = choices.get(person.randInt(choices.size()));
+    String b = choices.get(person.randInt(choices.size()));
+
+    String name = a + " " + b;
 
     if (appendNumbersToNames) {
       name = addHash(name);
