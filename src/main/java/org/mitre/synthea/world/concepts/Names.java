@@ -64,13 +64,13 @@ public class Names {
   @SuppressWarnings("unchecked")
   public static String fakeLastName(String language, Person person) {
     List<String> choices;
-    if ("spanish".equalsIgnoreCase(language)) {
+    /*if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish.family");
-    } else {
+    } else {*/
       choices = (List<String>) names.get("english.family");
-    }
+    //}
     // pick a random item from the list
-    String name = choices.get(person.randInt(choices.size()));
+    String name = choices.get(person.randInt(choices.size())) + " " + choices.get(person.randInt(choices.size()));
 
     if (appendNumbersToNames) {
       name = addHash(name);
