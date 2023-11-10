@@ -172,6 +172,7 @@
     },
     "Risky Activity": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -561,10 +562,11 @@
     },
     "Drinking": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "10939881000119105",
+          "code": 10939881000119104,
           "display": "Unhealthy alcohol drinking behavior (finding)"
         }
       ],
@@ -804,6 +806,7 @@
     },
     "Drug Use": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",

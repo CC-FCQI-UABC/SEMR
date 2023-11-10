@@ -16,13 +16,10 @@ IF "%~1" == "" (
   SET syntheaArgs= 
 
   :loop
-  ECHO ARG = %1
-  if "%~1"=="" goto run
-  SET syntheaArgs=!syntheaArgs!'%~1',
+  SET syntheaArgs=!syntheaArgs!'%1',
+  @rem Trailing comma ok, don't need to remove it
   shift
-  goto loop
+  if not "%~1"=="" goto loop
 
-  :run
-  ECHO syntheaArgs = !syntheaArgs!
   gradlew.bat run -Params="[!syntheaArgs!]"
 )

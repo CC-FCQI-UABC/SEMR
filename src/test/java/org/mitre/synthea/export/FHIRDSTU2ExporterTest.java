@@ -23,22 +23,20 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hl7.fhir.dstu3.model.DiagnosticReport;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mitre.synthea.ParallelTestingService;
 import org.mitre.synthea.TestHelper;
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.engine.Module;
 import org.mitre.synthea.engine.State;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.PayerManager;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.agents.Provider;
-import org.mitre.synthea.world.agents.behaviors.planeligibility.PlanEligibilityFinder;
 import org.mitre.synthea.world.concepts.HealthRecord.EncounterType;
 import org.mitre.synthea.world.concepts.VitalSign;
 import org.mockito.Mockito;
@@ -47,7 +45,7 @@ import org.mockito.Mockito;
  * Uses HAPI FHIR project to validate FHIR export. http://hapifhir.io/doc_validation.html
  */
 public class FHIRDSTU2ExporterTest {
-  private static boolean physStateEnabled;
+  private boolean physStateEnabled;
 
   /**
    * Temporary folder for any exported files, guaranteed to be deleted at the end of the test.
@@ -58,23 +56,18 @@ public class FHIRDSTU2ExporterTest {
   /**
    * Setup state for exporter test.
    */
-  @BeforeClass
-  public static void setup() {
+  @Before
+  public void setup() {
     // Ensure Physiology state is enabled
     physStateEnabled = State.ENABLE_PHYSIOLOGY_STATE;
     State.ENABLE_PHYSIOLOGY_STATE = true;
-    // Ensure plan and eligibilities are loaded.
-    String testStateDefault = Config.get("test_state.default", "Massachusetts");
-    String eligibilityFile = Config.get("generate.payers.insurance_plans.eligibilities_file");
-    PlanEligibilityFinder.buildPlanEligibilities(testStateDefault, eligibilityFile);
-    PayerManager.loadNoInsurance();
   }
 
   /**
    * Reset state after exporter test.
    */
-  @AfterClass
-  public static void tearDown() {
+  @After
+  public void tearDown() {
     State.ENABLE_PHYSIOLOGY_STATE = physStateEnabled;
   }
 
@@ -112,8 +105,15 @@ public class FHIRDSTU2ExporterTest {
     validator.setValidateAgainstStandardSchema(true);
     validator.setValidateAgainstStandardSchematron(true);
 
-    List<String> errors = ParallelTestingService.runInParallel((person) -> {
-      List<String> validationErrors = new ArrayList<String>();
+    List<String> validationErrors = new ArrayList<String>();
+
+    int numberOfPeople = 10;
+    Generator generator = new Generator(numberOfPeople);
+    generator.options.overflow = false;
+    for (int i = 0; i < numberOfPeople; i++) {
+      int x = validationErrors.size();
+      TestHelper.exportOff();
+      Person person = generator.generatePerson(i);
       Config.set("exporter.fhir_dstu2.export", "true");
       FhirDstu2.TRANSACTION_BUNDLE = person.randBoolean();
       String fhirJson = FhirDstu2.convertToFHIRJson(person, System.currentTimeMillis());
@@ -147,14 +147,14 @@ public class FHIRDSTU2ExporterTest {
         }
       }
 
-      if (! validationErrors.isEmpty()) {
+      int y = validationErrors.size();
+      if (x != y) {
         Exporter.export(person, System.currentTimeMillis());
       }
-      return validationErrors;
-    });
+    }
 
     assertTrue("Validation of exported FHIR bundle failed: "
-        + String.join("|", errors), errors.size() == 0);
+        + String.join("|", validationErrors), validationErrors.size() == 0);
   }
 
   @Test
@@ -181,8 +181,12 @@ public class FHIRDSTU2ExporterTest {
     int age = 35;
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time + 1);
+
+    Payer.loadNoInsurance();
+    for (int i = 0; i < age; i++) {
+      long yearTime = time - Utilities.convertTime("years", i);
+      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
+    }
 
     Module module = TestHelper.getFixture("observation.json");
 
@@ -241,10 +245,12 @@ public class FHIRDSTU2ExporterTest {
     int age = 35;
     long birthTime = time - Utilities.convertTime("years", age);
     person.attributes.put(Person.BIRTHDATE, birthTime);
-    PayerManager.clear();
-    PayerManager.loadNoInsurance();
-    person.coverage.setPlanToNoInsurance((long) person.attributes.get(Person.BIRTHDATE));
-    person.coverage.setPlanToNoInsurance(time + 1);
+
+    Payer.loadNoInsurance();
+    for (int i = 0; i < age; i++) {
+      long yearTime = time - Utilities.convertTime("years", i);
+      person.coverage.setPayerAtTime(yearTime, Payer.noInsurance);
+    }
 
     Module module = TestHelper.getFixture("observation.json");
 

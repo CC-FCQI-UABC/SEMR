@@ -178,8 +178,7 @@
       ],
       "remarks": [
         "https://www.cff.org/What-is-CF/Testing/"
-      ],
-      "reason": "Cystic_Fibrosis"
+      ]
     },
     "Sweat_Test": {
       "type": "Procedure",
@@ -358,8 +357,7 @@
       "direct_transition": "Meconium_Ileus_Resolved",
       "remarks": [
         "http://www.seattlechildrens.org/medical-conditions/digestive-gastrointestinal-conditions/meconium-ileus/"
-      ],
-      "reason": "Meconium Ileus"
+      ]
     },
     "Male_Infertility": {
       "type": "ConditionOnset",
@@ -367,8 +365,8 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": 707418001,
-          "display": "Male infertility due to cystic fibrosis (disorder)"
+          "code": 427089005,
+          "display": "Male Infertility"
         }
       ],
       "direct_transition": "chronic_cough"
@@ -491,8 +489,7 @@
         "https://www.cff.org/Life-With-CF/Daily-Life/Fitness-and-Nutrition/Nutrition/Taking-Care-of-Your-Digestive-System/Enzymes/",
         "",
         "\"Between 85 and 90% of CF patients have pancreatic insufficiency."
-      ],
-      "chronic": true
+      ]
     },
     "Life_With_Cystic_Fibrosis": {
       "type": "Delay",
@@ -697,8 +694,7 @@
       "reason": "Cystic_Fibrosis",
       "remarks": [
         "https://www.cff.org/About-Us/Media-Center/Press-Releases/The-Cystic-Fibrosis-Foundation-Applauds-FDA-Approval-of-Kalydeco/"
-      ],
-      "chronic": true
+      ]
     },
     "Prescribe_Mucus_Thinner": {
       "type": "MedicationOrder",
@@ -719,8 +715,7 @@
           "transition": "CF_CarePlan",
           "distribution": 0.1
         }
-      ],
-      "chronic": true
+      ]
     },
     "Salty_Skin": {
       "type": "Symptom",
@@ -801,8 +796,7 @@
         "http://pediatrics.aappublications.org/content/early/2016/03/22/peds.2015-1784",
         "",
         "Overview of the standard of care per quarter"
-      ],
-      "reason": "Cystic_Fibrosis"
+      ]
     },
     "Chest_XRay": {
       "type": "Procedure",
@@ -832,8 +826,7 @@
       ],
       "remarks": [
         "Chest X-rays should be done at least every other year, as shown in the link at \"Quarterly Checkup\""
-      ],
-      "reason": "Cystic_Fibrosis"
+      ]
     },
     "Oropharyngeal_Culture": {
       "type": "Procedure",
@@ -890,8 +883,7 @@
             }
           ]
         }
-      ],
-      "reason": "Cystic_Fibrosis"
+      ]
     },
     "Develop_Diabetes": {
       "type": "ConditionOnset",
@@ -1066,8 +1058,7 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "EndCheckup",
-      "reason": "Cystic_Fibrosis"
+      "direct_transition": "EndCheckup"
     },
     "Pulmonary_Function_Test": {
       "type": "Procedure",
@@ -1083,8 +1074,7 @@
         "high": 15,
         "unit": "minutes"
       },
-      "direct_transition": "Take_Blood_Sample",
-      "reason": "Cystic_Fibrosis"
+      "direct_transition": "Take_Blood_Sample"
     },
     "startDiseaseChain": {
       "type": "Simple",
@@ -1228,8 +1218,7 @@
       "reason": "Develop_Infection_1",
       "remarks": [
         "https://www.ncbi.nlm.nih.gov/pubmed/2941289"
-      ],
-      "administration": true
+      ]
     },
     "Prescribe_Vancomycin": {
       "type": "MedicationOrder",
@@ -1244,8 +1233,7 @@
       "remarks": [
         "https://www.mayoclinic.org/diseases-conditions/staph-infections/diagnosis-treatment/drc-20356227"
       ],
-      "reason": "Develop_Infection_2",
-      "administration": true
+      "reason": "Develop_Infection_2"
     },
     "patient_dies": {
       "type": "Simple",
@@ -1471,8 +1459,7 @@
         {
           "transition": "Release_From_Hospital"
         }
-      ],
-      "reason": "CF_Complication"
+      ]
     },
     "Antibiotic_Therapy": {
       "type": "Procedure",
@@ -1488,8 +1475,7 @@
         "high": 90,
         "unit": "minutes"
       },
-      "direct_transition": "Intravenous_Infusion",
-      "reason": "CF_Complication"
+      "direct_transition": "Intravenous_Infusion"
     },
     "death": {
       "type": "Death",
@@ -1577,8 +1563,7 @@
         "high": 60,
         "unit": "minutes"
       },
-      "direct_transition": "Oxygen_Therapy",
-      "reason": "CF_Complication"
+      "direct_transition": "Oxygen_Therapy"
     },
     "wheezing": {
       "type": "Symptom",
@@ -1631,8 +1616,7 @@
         {
           "transition": "Release_From_Hospital"
         }
-      ],
-      "reason": "CF_Complication"
+      ]
     },
     "Release_From_Hospital": {
       "type": "EncounterEnd",
@@ -1724,12 +1708,11 @@
       "codes": [
         {
           "system": "SNOMED-CT",
-          "code": "16602611000119108",
+          "code": 16602611000119108,
           "display": "Awaiting transplantation of lung (situation)"
         }
       ],
-      "direct_transition": "Lung_Transplant",
-      "reason": "Cystic_Fibrosis"
+      "direct_transition": "Lung_Transplant"
     },
     "Lung_Transplant_End": {
       "type": "EncounterEnd",

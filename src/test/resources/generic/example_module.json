@@ -5,6 +5,7 @@
     "can be cured with Examplitol or an Examplotomy but some never recover."
   ],
   "states": {
+
     "Initial": {
       "type": "Initial",
       "conditional_transition": [
@@ -20,6 +21,7 @@
         }
       ]
     },
+
     "Age_Guard": {
       "type": "Guard",
       "allow": {
@@ -30,15 +32,16 @@
       },
       "distributed_transition": [
         {
-          "distribution": 0.1,
+          "distribution": 0.10,
           "transition": "Pre_Examplitis"
         },
         {
-          "distribution": 0.9,
+          "distribution": 0.90,
           "transition": "Terminal"
         }
       ]
     },
+
     "Pre_Examplitis": {
       "type": "Delay",
       "range": {
@@ -48,6 +51,7 @@
       },
       "direct_transition": "Examplitis"
     },
+
     "Examplitis": {
       "type": "ConditionOnset",
       "target_encounter": "Wellness_Encounter",
@@ -60,11 +64,13 @@
       ],
       "direct_transition": "Wellness_Encounter"
     },
+
     "Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
       "direct_transition": "Examplitol"
     },
+
     "Examplitol": {
       "type": "MedicationOrder",
       "reason": "Examplitis",
@@ -75,8 +81,22 @@
           "display": "Examplitol"
         }
       ],
-      "direct_transition": "End Wellness Encounter"
+      "distributed_transition": [
+        {
+          "distribution": 0.2,
+          "transition": "Pre_Examplotomy"
+        },
+        {
+          "distribution": 0.1,
+          "transition": "Last_Days"
+        },
+        {
+          "distribution": 0.7,
+          "transition": "Terminal"
+        }
+      ]
     },
+
     "Pre_Examplotomy": {
       "type": "Delay",
       "range": {
@@ -86,6 +106,7 @@
       },
       "direct_transition": "Examplotomy_Encounter"
     },
+
     "Examplotomy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
@@ -98,6 +119,7 @@
       ],
       "direct_transition": "Examplotomy"
     },
+
     "Examplotomy": {
       "type": "Procedure",
       "duration": {
@@ -115,9 +137,10 @@
       "reason": "Examplitis",
       "direct_transition": "End_Examplotomy_Encounter"
     },
+
     "End_Examplotomy_Encounter": {
-      "type": "EncounterEnd",
-      "distributed_transition": [
+    	"type": "EncounterEnd",
+    	"distributed_transition": [
         {
           "distribution": 0.1,
           "transition": "Death"
@@ -128,39 +151,24 @@
         }
       ]
     },
+
     "Last_Days": {
       "type": "Delay",
       "range": {
-        "low": 8,
-        "high": 20,
-        "unit": "years"
+          "low": 8,
+          "high": 20,
+          "unit": "years"
       },
       "direct_transition": "Death"
     },
+
     "Death": {
       "type": "Death",
       "direct_transition": "Terminal"
     },
+
     "Terminal": {
       "type": "Terminal"
-    },
-    "End Wellness Encounter": {
-      "type": "EncounterEnd",
-      "distributed_transition": [
-        {
-          "distribution": 0.2,
-          "transition": "Pre_Examplotomy"
-        },
-        {
-          "distribution": 0.1,
-          "transition": "Last_Days"
-        },
-        {
-          "distribution": 0.7,
-          "transition": "Terminal"
-        }
-      ]
     }
-  },
-  "gmf_version": 2
+  }
 }

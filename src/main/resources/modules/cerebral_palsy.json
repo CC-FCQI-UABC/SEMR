@@ -599,6 +599,7 @@
     },
     "Cerebral_Palsy_Sialorrhea": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -650,7 +651,6 @@
     "Followup_Cerebral_Palsy_Encounter": {
       "type": "Encounter",
       "encounter_class": "ambulatory",
-      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -705,8 +705,7 @@
             "name": "Monitoring"
           }
         }
-      ],
-      "reason": "Condition_Onset_Cerebral Palsy"
+      ]
     },
     "Delay_Surgical Encounter": {
       "type": "Delay",
@@ -956,7 +955,7 @@
     },
     "Surgical_Encounter1": {
       "type": "Encounter",
-      "encounter_class": "ambulatory",
+      "encounter_class": "inpatient",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -1029,6 +1028,7 @@
     },
     "Cerebral_Palsy_Dystonia": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1044,6 +1044,7 @@
     },
     "Cerebral_Palsy_Pain": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1059,6 +1060,7 @@
     },
     "Cerebral_Palsy_Central_Hypotonia": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1074,6 +1076,7 @@
     },
     "Cerebral_Palsy_Spasticity": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1089,6 +1092,7 @@
     },
     "Cerebral_Palsy_Osteoporosis": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1104,6 +1108,7 @@
     },
     "Cerebral_Palsy_Epilepsy": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1119,6 +1124,7 @@
     },
     "Cerebral_Palsy_Intellectual_Disability": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1134,6 +1140,7 @@
     },
     "Cerebral_Palsy_GERD": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1309,10 +1316,11 @@
         "high": 30,
         "unit": "minutes"
       },
-      "direct_transition": "End_Cerebral_Palsy_Encounter1"
+      "direct_transition": "Living_with_CP"
     },
     "Cerebral_Palsy_Pneumonia": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1487,6 +1495,7 @@
     },
     "Cerebral_Palsy_Hip_Dislocation": {
       "type": "ConditionOnset",
+      "assign_to_attribute": "",
       "target_encounter": "Cerebral_Palsy_Encounter1",
       "codes": [
         {
@@ -1521,17 +1530,13 @@
           "distribution": 0.4
         },
         {
-          "transition": "End Encounter and Exit",
+          "transition": "Terminal",
           "distribution": 0.6000000000000001
         }
       ]
     },
     "Terminal": {
       "type": "Terminal"
-    },
-    "End Encounter and Exit": {
-      "type": "EncounterEnd",
-      "direct_transition": "Terminal"
     }
   },
   "remarks": [
@@ -1546,6 +1551,5 @@
     "Reference: AACPDM Clinical Care Pathway for Sialorrhea in Cerebral Palsy  (September 2017, AACPDM Care Pathways, for review 2020) https://www.aacpdm.org/publications/care-pathways/sialorrhea",
     "",
     ""
-  ],
-  "gmf_version": 2
+  ]
 }

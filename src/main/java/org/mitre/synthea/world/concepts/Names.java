@@ -38,19 +38,17 @@ public class Names {
   @SuppressWarnings("unchecked")
   public static String fakeFirstName(String gender, String language, Person person) {
     List<String> choices;
-    if ("spanish".equalsIgnoreCase(language)) {
-      choices = (List<String>) names.get("spanish." + gender);
-    } else {
-      choices = (List<String>) names.get("english." + gender);
-    }
-
+    //if ("spanish".equalsIgnoreCase(language)) {
+    //  choices = (List<String>) names.get("spanish." + gender);
+    //} else {
+    choices = (List<String>) names.get("english." + gender);
+    //}
     // pick a random item from the list
 
-    // Modificaciones de galindo synsynthea
-    int primerNombre = person.randInt(choices.size());
-    int segundoNombre = person.randInt(choices.size()); // debe ser diferente al primero
+    String a = choices.get(person.randInt(choices.size()));
+    String b = choices.get(person.randInt(choices.size()));
 
-    String name = choices.get(primerNombre) + " " + choices.get(segundoNombre);
+    String name = a + " " + b;
 
     if (appendNumbersToNames) {
       name = addHash(name);
@@ -70,13 +68,11 @@ public class Names {
   @SuppressWarnings("unchecked")
   public static String fakeLastName(String language, Person person) {
     List<String> choices;
-    if ("spanish".equalsIgnoreCase(language)) {
+    /*if ("spanish".equalsIgnoreCase(language)) {
       choices = (List<String>) names.get("spanish.family");
-    } else {
+    } else {*/
       choices = (List<String>) names.get("english.family");
-    }
-
-    // Modificaciones de galindo synsynthea
+    //}
     // pick a random item from the list
     String name = choices.get(person.randInt(choices.size())) + " " + choices.get(person.randInt(choices.size()));
 

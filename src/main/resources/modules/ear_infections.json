@@ -229,8 +229,7 @@
     "Next_Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Ear_Infection_End",
-      "reason": "Gets_Ear_Infection"
+      "direct_transition": "Ear_Infection_End"
     },
     "Ear_Infection_End": {
       "type": "ConditionEnd",

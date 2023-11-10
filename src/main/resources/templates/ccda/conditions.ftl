@@ -11,10 +11,9 @@
     <#list ehr_conditions as entry>
     <entry typeCode="DRIV">
       <act classCode="ACT" moodCode="EVN">
-        <templateId root="2.16.840.1.113883.10.20.22.4.3"/>
         <templateId root="2.16.840.1.113883.10.20.22.4.3" extension="2015-08-01"/>
         <!-- Problem act template -->
-        <id root="${entry.uuid}"/>
+        <id root="${UUID?api.toString()}"/>
         <code nullFlavor="NA"/>
         <#if entry.stop != 0>
         <statusCode code="completed"/>
@@ -27,7 +26,6 @@
         </effectiveTime>
         <entryRelationship typeCode="SUBJ" inversionInd="false">
           <observation classCode="OBS" moodCode="EVN">
-            <templateId root="2.16.840.1.113883.10.20.22.4.4"/>
             <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01"/>
             <!--Problem observation template - NOT episode template-->
             <id root="${UUID?api.toString()}"/>

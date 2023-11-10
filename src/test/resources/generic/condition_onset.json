@@ -7,7 +7,6 @@
         },
         "Diabetes": {
             "type": "ConditionOnset",
-            "assign_to_attribute" : "",
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "73211009",
@@ -30,7 +29,7 @@
             "codes": [{
                 "system": "SNOMED-CT",
                 "code": "50849002",
-                "display": "Emergency room admission (procedure)"
+                "display": "Emergency Room Admission"
             }],
             "direct_transition": "Appendicitis"
         },

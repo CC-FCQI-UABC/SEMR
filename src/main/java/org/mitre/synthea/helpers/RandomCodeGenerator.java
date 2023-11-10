@@ -3,8 +3,6 @@ package org.mitre.synthea.helpers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,16 +11,19 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Nonnull;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.mitre.synthea.world.concepts.HealthRecord.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Generates random codes based upon ValueSet URIs, with the help of a FHIR
@@ -39,8 +40,9 @@ public abstract class RandomCodeGenerator {
   private static final Logger logger = LoggerFactory.getLogger(RandomCodeGenerator.class);
   public static Map<String, List<Object>> codeListCache = new HashMap<>();
   public static List<Code> selectedCodes = new ArrayList<>();
-  private static UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
-  private static OkHttpClient client = new OkHttpClient();
+  private static UrlValidator urlValidator = new UrlValidator();
+
+  public static RestTemplate restTemplate = new RestTemplate();
 
   /**
    * Gets a random code from the expansion of a ValueSet.
@@ -69,26 +71,22 @@ public abstract class RandomCodeGenerator {
   @SuppressWarnings("unchecked")
   private static synchronized void expandValueSet(String valueSetUri) {
     if (!codeListCache.containsKey(valueSetUri)) {
-      Request request = new Request.Builder()
-              .url(expandBaseUrl + valueSetUri)
-              .header("Content-Type", "application/json")
-              .build();
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      HttpEntity<String> request = new HttpEntity<>(headers);
       Map<String, Object> valueSet = null;
       try {
-        Response response = client.newCall(request).execute();
+        ResponseEntity<String> response = restTemplate.exchange(expandBaseUrl + valueSetUri,
+            HttpMethod.GET, request,
+            String.class);
         ObjectMapper objectMapper = new ObjectMapper();
-        ResponseBody body = response.body();
-        if (body != null) {
-          valueSet = objectMapper.readValue(body.byteStream(),
-                  new TypeReference<Map<String, Object>>() {
+        valueSet = objectMapper.readValue(response.getBody(),
+            new TypeReference<Map<String, Object>>() {
             });
-        } else {
-          throw new RuntimeException("Value Set Expansion contained no body");
-        }
       } catch (JsonProcessingException e) {
         throw new RuntimeException("JsonProcessingException while parsing valueSet response");
-      } catch (IOException e) {
-        throw new RuntimeException("Issue when expanding the value set", e);
+      } catch (RestClientException e) {
+        throw new RestClientException("RestClientException while fetching valueSet response");
       }
 
       Map<String, Object> expansion = (Map<String, Object>) valueSet.get("expansion");

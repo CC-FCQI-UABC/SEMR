@@ -1,5 +1,6 @@
 package org.mitre.synthea.export;
 
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 
 import java.io.File;
@@ -84,8 +85,7 @@ public abstract class FhirGroupExporterR4 {
         String filename = group.getResourceType().toString() + ".ndjson";
         outFilePath = f.toPath().resolve(filename);
       } else {
-        Boolean pretty = Config.getAsBoolean("exporter.pretty_print", true);
-        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(pretty);
+        IParser parser = FhirR4.getContext().newJsonParser().setPrettyPrint(true);
         groupJson = parser.encodeResourceToString(group);
         outFilePath = f.toPath().resolve("groupInformation" + stop + ".json");
       }

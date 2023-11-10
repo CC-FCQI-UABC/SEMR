@@ -13,12 +13,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.helpers.Config;
 import org.mitre.synthea.helpers.Utilities;
-import org.mitre.synthea.world.agents.PayerManager;
+import org.mitre.synthea.world.agents.Payer;
 import org.mitre.synthea.world.agents.Provider;
 
 public class MetadataExporter {
@@ -46,16 +45,13 @@ public class MetadataExporter {
     long clinicianSeed = opts.clinicianSeed;
     metadata.put("clinicianSeed", clinicianSeed);
 
-    // reference and end times are expected to be entered on the command line as YYYYMMDD
+    // reference time is expected to be entered on the command line as YYYYMMDD
     // note that Y = "week year" and y = "year" per the formatting guidelines
     // and D = "day in year" and d = "day in month", so what we actually want is yyyyMMdd
     // see: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
     SimpleDateFormat yyyymmdd = new SimpleDateFormat("yyyyMMdd");
-    yyyymmdd.setTimeZone(TimeZone.getTimeZone("UTC"));
     String referenceTime = yyyymmdd.format(new Date(generator.referenceTime));
     metadata.put("referenceTime", referenceTime);
-    String endTime = yyyymmdd.format(new Date(generator.stop));
-    metadata.put("endTime", endTime);
 
     // - git commit hash of the current running version
     String version = Utilities.SYNTHEA_VERSION;
@@ -70,16 +66,12 @@ public class MetadataExporter {
     int providerCount = Provider.getProviderList().size();
     metadata.put("providerCount", providerCount);
 
-    int payerCount = PayerManager.getAllPayers().size();
+    int payerCount = Payer.getAllPayers().size();
     metadata.put("payerCount", payerCount);
 
     // Java version,
     String javaVersion = System.getProperty("java.version"); // something like "12" or "1.8.0_201"
     metadata.put("javaVersion", javaVersion);
-
-    // Number of generator threads
-    metadata.put("generate.thread_pool_size", generator.options.threadPoolSize);
-    metadata.put("generatorThreads", generator.threadPoolSize);
 
     // Actual Date/Time of execution.
     String runStartTime = ExportHelper.iso8601Timestamp(opts.runStartTime);

@@ -41,7 +41,7 @@
       "encounter_class" : "emergency",
       "codes" : [{
         "code" : "123456",
-        "display" : "Emergency room admission (procedure)"
+        "display" : "Emergency Room Admission"
       }],
       "direct_transition" : "Terminal"
     },

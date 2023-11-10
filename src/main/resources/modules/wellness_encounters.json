@@ -6,13 +6,12 @@
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Wellness_Encounter_Reason"
+      "direct_transition": "Wellness_Encounter"
     },
     "Wellness_Encounter": {
       "type": "Encounter",
       "wellness": true,
-      "direct_transition": "Record_Height",
-      "reason": "wellness_encounter_reason"
+      "direct_transition": "Record_Height"
     },
     "Record_Height": {
       "type": "Observation",
@@ -63,7 +62,7 @@
         {
           "system": "LOINC",
           "code": "39156-5",
-          "display": "Body mass index (BMI) [Ratio]"
+          "display": "Body Mass Index"
         }
       ],
       "unit": "kg/m2",
@@ -89,59 +88,9 @@
           }
         },
         {
-          "transition": "Obese_Check"
-        }
-      ]
-    },
-    "Obese_Check": {
-      "type": "Simple",
-      "conditional_transition": [
-        {
-          "transition": "Severe Obesity",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "BMI",
-            "operator": ">=",
-            "value": 40
-          }
-        },
-        {
-          "transition": "Obesity",
-          "condition": {
-            "condition_type": "Vital Sign",
-            "vital_sign": "BMI",
-            "operator": ">=",
-            "value": 30
-          }
-        },
-        {
           "transition": "Record_BP"
         }
       ]
-    },
-    "Obesity": {
-      "type": "ConditionOnset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 162864005,
-          "display": "Body mass index 30+ - obesity (finding)"
-        }
-      ],
-      "direct_transition": "Record_BP",
-      "assign_to_attribute": "obesity"
-    },
-    "Severe Obesity": {
-      "type": "ConditionOnset",
-      "assign_to_attribute": "obesity",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": 408512008,
-          "display": "Body mass index 40+ - severely obese (finding)"
-        }
-      ],
-      "direct_transition": "Record_BP"
     },
     "Record_BP": {
       "type": "MultiObservation",
@@ -150,7 +99,7 @@
         {
           "system": "LOINC",
           "code": "85354-9",
-          "display": "Blood pressure panel with all children optional"
+          "display": "Blood Pressure"
         }
       ],
       "observations": [
@@ -188,7 +137,7 @@
         {
           "system": "LOINC",
           "code": "51990-0",
-          "display": "Basic metabolic panel - Blood"
+          "display": "Basic Metabolic Panel"
         }
       ],
       "observations": [
@@ -199,7 +148,7 @@
             {
               "system": "LOINC",
               "code": "2339-0",
-              "display": "Glucose [Mass/volume] in Blood"
+              "display": "Glucose"
             }
           ],
           "unit": "mg/dL"
@@ -211,7 +160,7 @@
             {
               "system": "LOINC",
               "code": "6299-2",
-              "display": "Urea nitrogen [Mass/volume] in Blood"
+              "display": "Urea Nitrogen"
             }
           ],
           "unit": "mg/dL"
@@ -223,7 +172,7 @@
             {
               "system": "LOINC",
               "code": "38483-4",
-              "display": "Creatinine [Mass/volume] in Blood"
+              "display": "Creatinine"
             }
           ],
           "unit": "mg/dL"
@@ -235,7 +184,7 @@
             {
               "system": "LOINC",
               "code": "49765-1",
-              "display": "Calcium [Mass/volume] in Blood"
+              "display": "Calcium"
             }
           ],
           "unit": "mg/dL"
@@ -247,7 +196,7 @@
             {
               "system": "LOINC",
               "code": "2947-0",
-              "display": "Sodium [Moles/volume] in Blood"
+              "display": "Sodium"
             }
           ],
           "unit": "mmol/L"
@@ -259,7 +208,7 @@
             {
               "system": "LOINC",
               "code": "6298-4",
-              "display": "Potassium [Moles/volume] in Blood"
+              "display": "Potassium"
             }
           ],
           "unit": "mmol/L"
@@ -271,7 +220,7 @@
             {
               "system": "LOINC",
               "code": "2069-3",
-              "display": "Chloride [Moles/volume] in Blood"
+              "display": "Chloride"
             }
           ],
           "unit": "mmol/L"
@@ -283,7 +232,7 @@
             {
               "system": "LOINC",
               "code": "20565-8",
-              "display": "Carbon dioxide, total [Moles/volume] in Blood"
+              "display": "Carbon Dioxide"
             }
           ],
           "unit": "mmol/L"
@@ -298,7 +247,7 @@
         {
           "system": "LOINC",
           "code": "57698-3",
-          "display": "Lipid panel with direct LDL - Serum or Plasma"
+          "display": "Lipid Panel"
         }
       ],
       "observations": [
@@ -309,7 +258,7 @@
             {
               "system": "LOINC",
               "code": "2093-3",
-              "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+              "display": "Total Cholesterol"
             }
           ],
           "unit": "mg/dL"
@@ -345,7 +294,7 @@
             {
               "system": "LOINC",
               "code": "2085-9",
-              "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma"
+              "display": "High Density Lipoprotein Cholesterol"
             }
           ],
           "unit": "mg/dL"
@@ -361,7 +310,7 @@
         {
           "system": "LOINC",
           "code": "14959-1",
-          "display": "Microalbumin/Creatinine [Mass Ratio] in Urine"
+          "display": "Microalbumin Creatinine Ratio"
         }
       ],
       "unit": "mg/g",
@@ -375,7 +324,7 @@
         {
           "system": "LOINC",
           "code": "33914-3",
-          "display": "Glomerular filtration rate/1.73 sq M.predicted [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)"
+          "display": "Estimated Glomerular Filtration Rate"
         }
       ],
       "unit": "mL/min/{1.73_m2}",
@@ -394,7 +343,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "44054006",
-                    "display": "Diabetes mellitus type 2 (disorder)"
+                    "display": "Diabetes"
                   }
                 ]
               },
@@ -430,7 +379,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "44054006",
-                    "display": "Diabetes mellitus type 2 (disorder)"
+                    "display": "Diabetes"
                   }
                 ]
               },
@@ -475,7 +424,7 @@
               {
                 "system": "SNOMED-CT",
                 "code": "44054006",
-                "display": "Diabetes mellitus type 2 (disorder)"
+                "display": "Diabetes"
               }
             ]
           },
@@ -513,56 +462,56 @@
     },
     "Record_Current_Smoker": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "unit": "",
       "codes": [
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status"
+          "display": "Tobacco smoking status NHIS"
         }
       ],
       "value_code": {
         "system": "SNOMED-CT",
         "code": 449868002,
-        "display": "Smokes tobacco daily (finding)"
+        "display": "Current every day smoker"
       },
       "direct_transition": "SDoH Check"
     },
     "Record_Former_Smoker": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "unit": "",
       "codes": [
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status"
+          "display": "Tobacco smoking status NHIS"
         }
       ],
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 8517006,
-        "display": "Ex-smoker (finding)"
+        "display": "Former smoker"
       }
     },
     "Record_Never_Smoker": {
       "type": "Observation",
-      "category": "social-history",
+      "category": "survey",
       "unit": "",
       "codes": [
         {
           "system": "LOINC",
           "code": "72166-2",
-          "display": "Tobacco smoking status"
+          "display": "Tobacco smoking status NHIS"
         }
       ],
       "direct_transition": "SDoH Check",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 266919005,
-        "display": "Never smoked tobacco (finding)"
+        "display": "Never smoker"
       }
     },
     "check_CBC": {
@@ -597,7 +546,7 @@
                   {
                     "system": "SNOMED-CT",
                     "code": "44054006",
-                    "display": "Diabetes mellitus type 2 (disorder)"
+                    "display": "Diabetes"
                   }
                 ]
               },
@@ -627,7 +576,7 @@
         {
           "system": "LOINC",
           "code": "58410-2",
-          "display": "CBC panel - Blood by Automated count"
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
         }
       ],
       "observations": [
@@ -825,7 +774,7 @@
         {
           "system": "LOINC",
           "code": "59576-9",
-          "display": "Body mass index (BMI) [Percentile] Per age and sex"
+          "display": "Body mass index (BMI) [Percentile] Per age and gender"
         }
       ],
       "direct_transition": "Record_BP",
@@ -843,7 +792,7 @@
         }
       ],
       "attribute": "current_weight_length_percentile",
-      "direct_transition": "Record_Head_Circumference_Percentile"
+      "direct_transition": "Record Head Circumference"
     },
     "Record Head Circumference": {
       "type": "Observation",
@@ -1016,30 +965,6 @@
       "type": "CallSubmodule",
       "submodule": "encounter/substance_use_screening",
       "direct_transition": "End_Of_Wellness_Encounter"
-    },
-    "Record_Head_Circumference_Percentile": {
-      "type": "Observation",
-      "category": "vital-signs",
-      "unit": "%",
-      "codes": [
-        {
-          "system": "LOINC",
-          "code": "8289-1",
-          "display": "Head Occipital-frontal circumference Percentile"
-        }
-      ],
-      "vital_sign": "Head Circumference Percentile",
-      "direct_transition": "Record Head Circumference"
-    },
-    "Wellness_Encounter_Reason": {
-      "type": "SetAttribute",
-      "attribute": "wellness_encounter_reason",
-      "direct_transition": "Wellness_Encounter",
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 410424005,
-        "display": "Wellness surveillance (regime/therapy)"
-      }
     }
   },
   "gmf_version": 1

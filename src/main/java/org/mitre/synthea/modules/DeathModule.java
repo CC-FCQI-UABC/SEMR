@@ -34,9 +34,8 @@ public class DeathModule {
 
       Code causeOfDeath = (Code) person.attributes.get(Person.CAUSE_OF_DEATH);
 
-      person.releaseCurrentEncounter(time, "DeathModule");
       Encounter encounter = EncounterModule.createEncounter(person, time, EncounterType.WELLNESS,
-          ClinicianSpecialty.GENERAL_PRACTICE, DEATH_CERTIFICATION, "DeathModule");
+          ClinicianSpecialty.GENERAL_PRACTICE, DEATH_CERTIFICATION);
       encounter.reason = causeOfDeath;
 
       Observation codObs = person.record.observation(time, CAUSE_OF_DEATH_CODE.code, causeOfDeath);
@@ -45,10 +44,6 @@ public class DeathModule {
 
       Report deathCert = person.record.report(time, DEATH_CERTIFICATE.code, 1);
       deathCert.codes.add(DEATH_CERTIFICATE);
-
-      person.record.encounterEnd(time, EncounterType.WELLNESS);
-      // Do NOT release the DeathModule encounter, because no one should
-      // be able to have an encounter after this one.
     }
   }
 

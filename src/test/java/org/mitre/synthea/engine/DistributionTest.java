@@ -21,17 +21,6 @@ public class DistributionTest {
   }
 
   @Test
-  public void testValidateExponential() {
-    Distribution d = new Distribution();
-    d.kind = Distribution.Kind.EXPONENTIAL;
-    assertFalse(d.validate());
-    HashMap<String, Double> parameters = new HashMap();
-    parameters.put("mean", 5.3d);
-    d.parameters = parameters;
-    assertTrue(d.validate());
-  }
-
-  @Test
   public void testRounding() {
     Distribution d = new Distribution();
     d.kind = Distribution.Kind.UNIFORM;

@@ -190,7 +190,6 @@
       "type": "Encounter",
       "encounter_class": "ambulatory",
       "reason": "ADHD",
-      "telemedicine_possibility": "possible",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -207,7 +206,7 @@
         {
           "system": "SNOMED-CT",
           "code": "228557008",
-          "display": "Cognitive and behavioral therapy (regime/therapy)"
+          "display": "Cognitive and behavioral therapy"
         }
       ],
       "duration": {

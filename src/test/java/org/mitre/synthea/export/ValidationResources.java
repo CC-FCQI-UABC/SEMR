@@ -23,32 +23,12 @@ public class ValidationResources {
   private FhirValidator validatorR4;
   static final Logger logger = LoggerFactory.getLogger(ValidationResources.class);
 
-  private ValidationResources() {
-    // private - use the factory
-  }
-
   /**
-   * Create FHIR context, validator, and validation chain for FHIR STU3.
+   * Create FHIR context, validator, and validation chain.
    */
-  public static ValidationResources forSTU3() {
-    ValidationResources vr = new ValidationResources();
-    vr.initializeSTU3();
-    return vr;
-  }
-
-  /**
-   * Create FHIR context, validator, and validation chain for FHIR R4.
-   * US Core 4 and 5 support is optional. Note that if both are loaded,
-   * the validator may not be able to choose the correct artifact when
-   * validating a given resource.
-   *
-   * @param useUSCore4 Whether or not the US Core v4 artifacts should be loaded
-   * @param useUSCore5 Whether or not the US Core v5 artifacts should be loaded
-   */
-  public static ValidationResources forR4(boolean useUSCore4, boolean useUSCore5) {
-    ValidationResources vr = new ValidationResources();
-    vr.initializeR4(useUSCore4, useUSCore5);
-    return vr;
+  public ValidationResources() {
+    initializeSTU3();
+    initializeR4();
   }
 
   private void initializeSTU3() {
@@ -67,19 +47,19 @@ public class ValidationResources {
     validatorSTU3 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 
-  private void initializeR4(boolean useUSCore4, boolean useUSCore5) {
+  private void initializeR4() {
     FhirContext ctx = FhirR4.getContext();
     FhirInstanceValidator instanceValidator =
         new FhirInstanceValidator(ctx);
     ValidationSupportChain chain = new ValidationSupportChain(
-            new ValidationSupportR4(ctx, useUSCore4, useUSCore5),
+            new ValidationSupportR4(ctx),
             new DefaultProfileValidationSupport(ctx),
-            new CommonCodeSystemsTerminologyService(ctx),
-            new InMemoryTerminologyServerValidationSupport(ctx)
+            new InMemoryTerminologyServerValidationSupport(ctx),
+            new CommonCodeSystemsTerminologyService(ctx)
     );
     instanceValidator.setValidationSupport(chain);
     instanceValidator.setAnyExtensionsAllowed(true);
-    instanceValidator.setErrorForUnknownProfiles(true);
+    instanceValidator.setErrorForUnknownProfiles(false);
     validatorR4 = ctx.newValidator().registerValidatorModule(instanceValidator);
   }
 

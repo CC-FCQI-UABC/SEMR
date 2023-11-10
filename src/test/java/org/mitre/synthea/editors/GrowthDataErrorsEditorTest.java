@@ -4,10 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mitre.synthea.world.agents.PayerManager;
+import org.mitre.synthea.editors.GrowthDataErrorsEditor;
 import org.mitre.synthea.world.agents.Person;
 import org.mitre.synthea.world.concepts.HealthRecord;
 
@@ -21,11 +22,7 @@ public class GrowthDataErrorsEditorTest {
    */
   @Before
   public void setup() {
-    Person person = new Person(1);
-    person.attributes.put(Person.BIRTHDATE, 0L);
-    PayerManager.loadNoInsurance();
-    person.coverage.setPlanToNoInsurance(0L);
-    record = new HealthRecord(person);
+    record = new HealthRecord(new Person(1));
     HealthRecord.Encounter e = record.encounterStart(1000, HealthRecord.EncounterType.OUTPATIENT);
     // Weight Observation
     e.addObservation(1000, GrowthDataErrorsEditor.WEIGHT_LOINC_CODE, 50d, "Body Weight");

@@ -13,7 +13,7 @@
       <supply classCode="SPLY" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.50"/>
         <!-- Supply activity template -->
-        <id root="${entry.uuid}"/>
+        <id root="${UUID?api.toString()}"/>
         <statusCode code="completed"/>
         <effectiveTime value="${entry.start?number_to_date?string["yyyyMMddHHmmss"]}"/>
         <participant typeCode="DEV">

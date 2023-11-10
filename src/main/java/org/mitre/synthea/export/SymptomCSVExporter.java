@@ -33,7 +33,7 @@ public class SymptomCSVExporter {
   /**
    * Charset for specifying the character set of the output files.
    */
-  private Charset charset = Charset.forName(Config.get("exporter.encoding", "UTF-8"));
+  private Charset charset = Charset.forName(Config.get("exporter.encoding"));
 
   /**
    * System-dependent string for a line break. (\n on Mac, *nix, \r\n on Windows)
